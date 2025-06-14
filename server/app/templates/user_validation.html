@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Validación de Cuenta - GastroLink</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Roboto, sans-serif;
+      background-color: #f4f4f4;
+      color: #333;
+      padding: 40px 20px;
+      display: flex;
+      justify-content: center;
+    }
+
+    .email-container {
+      background-color: #fff;
+      max-width: 500px;
+      width: 100%;
+      padding: 30px;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h2 {
+      color: #222;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .otp-code {
+      display: inline-block;
+      font-size: 24px;
+      font-weight: bold;
+      letter-spacing: 2px;
+      background: #f0f0f0;
+      color: #007b55;
+      padding: 10px 20px;
+      border-radius: 6px;
+      margin: 20px 0;
+    }
+
+    .footer {
+      font-size: 13px;
+      color: #888;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <div class="email-container">
+    <h2>Hola {{ nombre }} 👋</h2>
+    <p>Gracias por registrarte en <strong>GastroLink</strong>.</p>
+    <p>Para activar tu cuenta, copiá el siguiente código de verificación en la plataforma:</p>
+
+    <div class="otp-code">{{ opt_code }}</div>
+
+    <p>Este código es válido por solo unos minutos. Si no fuiste vos quien inició el registro, podés ignorar este mensaje.</p>
+
+    <div class="footer">
+      GastroLink &copy; {{ año_actual }} — Todos los derechos reservados
+    </div>
+  </div>
+</body>
+</html>

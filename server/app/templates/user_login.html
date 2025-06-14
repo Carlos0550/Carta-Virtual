@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bienvenido a GastroLink</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f4;
+        }
+        
+        .email-container {
+            padding: 1rem;
+            border-radius: 10px;
+            max-width: 900px;
+            margin: 0 auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            border-radius: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .logo {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        .subtitle {
+            font-size: 16px;
+            opacity: 0.9;
+            font-weight: 300;
+        }
+        
+        .content {
+            border-radius: 10px;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .welcome-text {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+        
+        .description {
+            border-radius: 10px;
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 30px;
+            line-height: 1.8;
+        }
+        
+        .otp-container {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            border-radius: 15px;
+            padding: 30px;
+            margin: 30px 0;
+            box-shadow: 0 8px 25px rgba(240, 147, 251, 0.3);
+        }
+        
+        .otp-label {
+            color: white;
+            font-size: 16px;
+            margin-bottom: 15px;
+            font-weight: 500;
+        }
+        
+        .otp-code {
+            background: white;
+            color: #333;
+            font-size: 36px;
+            font-weight: bold;
+            padding: 20px 30px;
+            border-radius: 10px;
+            letter-spacing: 8px;
+            font-family: 'Courier New', monospace;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            display: inline-block;
+            min-width: 200px;
+        }
+        
+        .instructions {
+            background-color: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 0 8px 8px 0;
+        }
+        
+        .instructions h3 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+        
+        .instructions p {
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .cta-button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 16px;
+            display: inline-block;
+            margin: 20px 0;
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+            transition: all 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.6);
+        }
+        
+        .footer {
+            border-radius: 10px;
+            background-color: #2c3e50;
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+        
+        .footer p {
+            margin-bottom: 10px;
+            opacity: 0.8;
+        }
+        
+        .social-links {
+            margin-top: 20px;
+        }
+        
+        .social-link {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+        
+        .social-link:hover {
+            opacity: 1;
+        }
+        
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #ddd, transparent);
+            margin: 30px 0;
+        }
+        
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                margin: 0;
+                box-shadow: none;
+            }
+            
+            .header {
+                padding: 30px 15px;
+            }
+            
+            .logo {
+                font-size: 28px;
+            }
+            
+            .content {
+                padding: 30px 20px;
+            }
+            
+            .otp-code {
+                font-size: 28px;
+                letter-spacing: 4px;
+                padding: 15px 20px;
+            }
+            
+            .welcome-text {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <div class="logo">🍽️🔗 GastroLink</div>
+            <div class="subtitle">Tu conexión perfecta con el mundo gastronómico</div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <h1 class="welcome-text">¡Bienvenido {{ usuario_nombre }}! 🎉</h1>
+            
+            <p class="description">
+                Nos alegra tenerte de vuelta en <strong>GastroLink</strong>. Para completar tu proceso de autenticación, por favor utiliza el siguiente código de verificación:
+            </p>
+            
+            <div class="otp-container">
+                <div class="otp-label">Tu código de verificación es:</div>
+                <div class="otp-code">{{ codigo_otp }}</div>
+            </div>
+            
+            <div class="instructions">
+                <h3>📱 Instrucciones:</h3>
+                <p>
+                    • Ingresa este código en la página dentro de los próximos <strong>5 minutos</strong><br>
+                    • Si no solicitaste este código, puedes ignorar este correo<br>
+                    • Para tu seguridad, nunca compartas este código con nadie
+                </p>
+            </div>
+            
+            <!-- <a href="{{ enlace_verificacion }}" class="cta-button">
+                Verificar Ahora ✨
+            </a> -->
+            
+            <div class="divider"></div>
+            
+            <p style="color: #888; font-size: 14px;">
+                ¿Tienes problemas? Contáctanos en <a href="mailto:gastrolink.site@gmail.com" style="color: #000000;">gastrolink.site@gmail.com</a>
+            </p>
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p><strong>GastroLink</strong> - Conectando sabores, creando experiencias</p>
+        
+            <p style="margin-top: 20px; font-size: 12px; opacity: 0.6;">
+                © {{ ano_actual }} GastroLink. Todos los derechos reservados.
+            </p>
+        </div>
+    </div>
+</body>
+</html>

@@ -1,0 +1,8 @@
+server/venv
+server/app/__pycache__
+CartaVSQL
+server/.env.env
+*/cpython-313.pyc
+server/app/services/__pycache__/auth_services.cpython-313.pyc
+server/app/services/__pycache__/users_services.cpython-313.pyc
+server/.env
