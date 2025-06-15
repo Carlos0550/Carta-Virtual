@@ -6,7 +6,7 @@ from ..validations.AuthTypes import LoginRequest
 from ..models import Users
 
 from flask import jsonify, make_response
-from datetime import timedelta
+from datetime import timedelta, time, datetime
 from flask_jwt_extended import create_access_token, create_refresh_token, set_refresh_cookies
 
 from ..services.users_services import generate_and_send_otp
@@ -26,6 +26,9 @@ def loginUser(data: LoginRequest):
             return jsonify({
                 "msg": "Su cuenta aún no ha sido verificada, un nuevo código fué enviado a su correo."
             }),401
+        
+        
+
         code = sendUserOTPLogin(
             user_name=founded_user.user_name,
             user_email=founded_user.user_email
@@ -42,6 +45,7 @@ def loginUser(data: LoginRequest):
             "otp_code": str(code)
         })
         r.expire(redis_key, 5*60)
+
         return jsonify({
             "msg": "Un código de acceso fué enviado a su correo."
         }),200
@@ -78,15 +82,16 @@ def validate_and_login(user_email:str, otp_code:str):
             "user_email": founded_user.user_email
         }
 
+        now = datetime.now()
+
+        tomorrow_midnight = datetime.combine(now.date() + timedelta(days=1), time.min)
+
+        expires_delta = tomorrow_midnight - now
+
         access_token = create_access_token(
             identity=user_identity,
             additional_claims=claims,
-            expires_delta=timedelta(minutes=10)  
-        )
-
-        refresh_token = create_refresh_token(
-            identity=user_identity,
-            expires_delta=timedelta(days=7)      
+            expires_delta= expires_delta  
         )
 
         response = make_response(jsonify({
@@ -95,7 +100,6 @@ def validate_and_login(user_email:str, otp_code:str):
             "user_data": claims
         }), 200)
 
-        set_refresh_cookies(response, refresh_token)
         r.delete(redis_key)
 
         return response
