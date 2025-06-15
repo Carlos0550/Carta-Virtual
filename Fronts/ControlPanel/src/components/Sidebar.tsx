@@ -182,28 +182,39 @@ function Sidebar({ mobileExtended, setMobileExtended }: Props) {
                     </Card>
                                 <Box
                                     className={`sidebar-list ${location.pathname === "/" ? "active" : ""}`}
-                                    onClick={() => navigate("/")}
+                                    onClick={() => {
+                                        navigate("/");
+                                        setMobileExtended(false);
+                                    }}
                                 >
                                     <IoHome size={20} /> Inicio
                                 </Box>
 
                                 <Box
                                     className={`sidebar-list ${location.pathname === "/business" ? "active" : ""}`}
-                                    onClick={() => navigate("/business")}
+                                    onClick={() => {
+                                        navigate("/business");
+                                        setMobileExtended(false);
+                                    }}
                                 >
                                     <FaBriefcase size={20} /> Mi negocio
                                 </Box>
 
                                 <Box
                                     className={`sidebar-list ${location.pathname === "/expirations" ? "active" : ""}`}
-                                    onClick={() => navigate("/expirations")}
+                                    onClick={() => {
+                                        navigate("/expirations")
+                                    }}
                                 >
                                     <BiDish size={20} /> Mi menú
                                 </Box>
 
                                 <Box
                                     className={`sidebar-list ${location.pathname === "/expirations" ? "active" : ""}`}
-                                    onClick={() => navigate("/expirations")}
+                                    onClick={() => {
+                                        navigate("/expirations")
+                                        setMobileExtended(false);
+                                    }}
                                 >
                                     <BiFoodMenu size={20} /> Personalización de carta
                                 </Box>
