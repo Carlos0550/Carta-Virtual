@@ -1,4 +1,6 @@
+import type React from "react"
 import type { LoginData, UserInfo } from "./HookTypes/AuthTypes"
+import type { BusinessModal } from "./HookTypes/ModalTypes"
 
 interface AuthHooks{
     loginData: LoginData, 
@@ -9,7 +11,14 @@ interface AuthHooks{
     validateOTP: (user_email: string, otp_code: string) => Promise<boolean>
 }
 
+interface ModalHooks{
+    businessModal: BusinessModal | null, 
+    setBusinessModal: React.Dispatch<React.SetStateAction<BusinessModal | null>>
+    closeBusinessModal: () => void
+}
+
 export interface AppContextTypes{
     useAuthHook: AuthHooks,
     width: number
+    useModalHook: ModalHooks
 }

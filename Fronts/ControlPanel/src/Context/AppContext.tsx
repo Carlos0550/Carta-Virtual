@@ -2,6 +2,7 @@ import { createContext, useContext, useMemo, useState } from "react";
 import WidthUtil from "./ContextUtils/WidthUtil";
 import type { AppContextTypes } from "./ContextTypes";
 import useAuth from "./ContextHooks/useAuth";
+import useModal from "./ContextHooks/useModal";
 
 const AppContext = createContext<AppContextTypes | null>(null);
 
@@ -16,11 +17,13 @@ export const useAppContext = () => {
 export const AppContextProvider = ({ children }: any) => {
     const width = WidthUtil().width
     const useAuthHook = useAuth()
-
+    const useModalHook = useModal()
     const ContextValues = useMemo(() => ({
-        width, useAuthHook
+        width, useAuthHook,
+        useModalHook,
     }),[
-        width, useAuthHook
+        width, useAuthHook,
+        useModalHook
     ])
     return <AppContext.Provider value={ContextValues}>{children}</AppContext.Provider>;
 };
