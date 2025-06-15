@@ -6,6 +6,7 @@ import os
 from config import config_dict
 from .routes.users_routes import users_bp
 from .routes.auth_routes import auth_bp
+from .routes.geo_routes import geo_bp
 from .connections.pg_database import db
 
 from datetime import timedelta
@@ -39,5 +40,6 @@ def create_app():
 
     app.register_blueprint(users_bp, url_prefix="/users")
     app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(geo_bp, url_prefix="/geodata")
 
     return app
