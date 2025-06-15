@@ -219,7 +219,6 @@ function useAuth() {
   const refreshSessionUrl = new URL(`${endpoints.auth}/refresh-session`)
 
   try {
-    // 1. Intentar restaurar con el access_token
     const restoreRes = await fetch(restoreSessionUrl.toString(), {
       headers: {
         Authorization: `Bearer ${access_token}`,
@@ -236,14 +235,13 @@ function useAuth() {
           user_name: data.user_name,
         },
       })
-      navigate("/dashboard")
+      navigate("/")
       return
     }
 
-    // 2. Si el access_token falló, intentar refresh
     const refreshRes = await fetch(refreshSessionUrl.toString(), {
       method: "POST",
-      credentials: "include", // necesario para enviar la cookie con el refresh_token
+      credentials: "include", 
     })
 
     if (refreshRes.ok) {
@@ -263,7 +261,6 @@ function useAuth() {
       return
     }
 
-    // 3. Si también falla el refresh
     localStorage.removeItem("access_token")
     navigate("/authentication")
   } catch (error) {
