@@ -7,5 +7,6 @@ export const base_api={
 export const endpoints = {
     users: new URL(`${base_api.url}/users`),
     auth: new URL(`${base_api.url}/auth`),
-    geodata: new URL(`${base_api.url}/geodata`)
+    geodata: new URL(`${base_api.url}/geodata`),
+    business: new URL(`${base_api.url}/business`),
 }
