@@ -1,17 +1,21 @@
+import os
+import requests
+from datetime import timedelta
+
 from flask import Flask
 from flask_cors import CORS
 from flask_mail import Mail
 from dotenv import load_dotenv
-import os
 from config import config_dict
+
+from flask_jwt_extended import JWTManager
+
 from .routes.users_routes import users_bp
 from .routes.auth_routes import auth_bp
 from .routes.geo_routes import geo_bp
-from .connections.pg_database import db
+from .routes.business_routes import business_routes
 
-from datetime import timedelta
-from flask_jwt_extended import JWTManager
-import requests
+from .connections.pg_database import db
 load_dotenv()
 
 mail = Mail()
@@ -87,7 +91,7 @@ def create_app():
     app.register_blueprint(users_bp, url_prefix="/users")
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(geo_bp, url_prefix="/geodata")
-
+    app.register_blueprint(business_routes, url_prefix="/business")
     
     download_geo_data()
     return app
