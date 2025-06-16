@@ -160,7 +160,8 @@ function useAuth() {
       const result = await fetch(url, {
         headers: {
           "Content-Type": "application/json"
-        }
+        },
+        credentials: "include",
       });
 
       const responseD = await result.json()
@@ -181,7 +182,7 @@ function useAuth() {
         color: "green",
         position: "top-right"
       });
-      navigate("/dashboard")
+      navigate("/")
       return true
     } catch (error: any) {
       console.log(error)
@@ -257,7 +258,7 @@ function useAuth() {
           user_name: data.user_data.user_name,
         },
       })
-      navigate("/dashboard")
+      navigate("/")
       return
     }
 
