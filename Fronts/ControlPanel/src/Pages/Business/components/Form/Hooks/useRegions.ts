@@ -4,8 +4,8 @@ import { GetRegions } from '../services/GetRegions';
 export const useRegions = (countryCode: string) =>
   useQuery({
     queryKey: ['regions', countryCode],
-    queryFn: () => GetRegions({ countryCode, regionSearch: "" }).then(r => r.regions),
+    queryFn: () => GetRegions({ countryCode}).then(r => r.regions),
     enabled: !!countryCode,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60,
     placeholderData: prev => prev,
   });

@@ -4,8 +4,8 @@ import { GetCities } from '../services/GetCities';
 export const useCities = (countryCode: string, regionCode: string) =>
   useQuery({
     queryKey: ['cities', countryCode, regionCode],
-    queryFn: () => GetCities({ countryCode, regionCode, citySearch: "" }).then(r => r.cities),
+    queryFn: () => GetCities({ countryCode, regionCode }).then(r => r.cities),
     enabled: !!countryCode && !!regionCode,
-    staleTime: 1000 * 60 * 5,
+    staleTime: 1000 * 60,// 1 minute
     placeholderData: prev => prev,
   });
