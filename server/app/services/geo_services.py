@@ -1,10 +1,8 @@
 import json
 import os
-import time
 from typing import List, Dict
 from functools import lru_cache
 
-# --- Carga optimizada del JSON ---
 @lru_cache(maxsize=1)
 def _load_countries_data() -> List[dict]:
     BASE_DIR = os.path.dirname(__file__)
@@ -14,7 +12,6 @@ def _load_countries_data() -> List[dict]:
     with open(DATA_PATH, encoding="utf-8") as f:
         return json.load(f)
 
-# --- Obtener países ---
 def get_countries(namePrefix: str = "") -> List[Dict[str, str]]:
     data = _load_countries_data()
 
@@ -27,14 +24,12 @@ def get_countries(namePrefix: str = "") -> List[Dict[str, str]]:
         return all_countries[:15]
 
     q = namePrefix.strip().lower()
-    time.sleep(1)  # Simula latencia
 
     filtered = [
         c for c in all_countries if q in c["label"].lower()
     ]
     return filtered[:15]
 
-# --- Obtener regiones por país ---
 def get_regions(country_iso: str) -> List[Dict[str, str]]:
     data = _load_countries_data()
     country = next((c for c in data if c["iso2"].lower() == country_iso.lower()), None)
@@ -51,7 +46,6 @@ def get_regions(country_iso: str) -> List[Dict[str, str]]:
         if state.get("id") and state.get("name")
     ]
 
-# --- Obtener ciudades por país y estado ---
 def get_cities(country_iso: str, region_id: int) -> List[Dict[str, str]]:
     data = _load_countries_data()
     country = next((c for c in data if c["iso2"].lower() == country_iso.lower()), None)
