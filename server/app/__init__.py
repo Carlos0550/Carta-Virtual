@@ -62,7 +62,7 @@ def download_geo_data():
 def create_app():
     env = os.getenv("FLASK_ENV", "development")
     app = Flask(__name__)
-    CORS(app)
+    CORS(app, supports_credentials=True)
 
     app.config['MAIL_SERVER'] = 'smtp.gmail.com'
     app.config['MAIL_PORT'] = 587
@@ -75,6 +75,8 @@ def create_app():
     app.config["JWT_COOKIE_SECURE"] = False  # true para HTTPS
     app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(minutes=15)
     app.config["JWT_REFRESH_TOKEN_EXPIRES"] = timedelta(days=7)
+    app.config["JWT_TOKEN_LOCATION"] = ["headers", "cookies"]
+    app.config["JWT_COOKIE_CSRF_PROTECT"] = False
 
     app.config.from_object(config_dict[env])
 
