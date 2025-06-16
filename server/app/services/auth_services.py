@@ -91,7 +91,13 @@ def validate_and_login(user_email:str, otp_code:str):
         access_token = create_access_token(
             identity=user_identity,
             additional_claims=claims,
-            expires_delta= expires_delta  
+            expires_delta= timedelta(minutes=1) 
+        )
+
+        refresh_token = create_refresh_token(
+            identity=user_identity,
+            additional_claims=claims,
+            expires_delta=(timedelta(days=7))
         )
 
         response = make_response(jsonify({
@@ -100,6 +106,7 @@ def validate_and_login(user_email:str, otp_code:str):
             "user_data": claims
         }), 200)
 
+        set_refresh_cookies(response, refresh_token)
         r.delete(redis_key)
 
         return response
