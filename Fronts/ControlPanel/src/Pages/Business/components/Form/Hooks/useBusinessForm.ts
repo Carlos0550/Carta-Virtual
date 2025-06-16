@@ -4,17 +4,8 @@ import { useRegions } from "./useRegions";
 import { useCities } from "./useCities";
 import useSessionValidator from "../../../../../Context/ContextUtils/useSessionValidator";
 import { useAppContext } from "../../../../../Context/AppContext";
+import type { BusinessFormData } from "../../../../../Context/HookTypes/BusinessTypes";
 
-export interface BusinessFormData {
-  business_name: string;
-  business_description: string;
-  business_address1: string;
-  countryCode: string;
-  regionCode: string;
-  city: string;
-  business_phone: string;
-  business_email: string;
-}
 
 type BusinessFormErrors = Partial<Record<keyof BusinessFormData | 'general', string>>;
 
@@ -31,8 +22,11 @@ const initialFormData: BusinessFormData = {
 
 function useBusinessForm() {
   const {
-    useModalHook:{
+    useModalHook: {
       closeBusinessModal
+    },
+    businessHooks: {
+      saveBusiness
     }
   } = useAppContext()
   const { ensureSessionIsValid } = useSessionValidator()
@@ -42,7 +36,7 @@ function useBusinessForm() {
   const [formSuccess, setFormSuccess] = useState(false);
   const [countrySearch, setCountrySearch] = useState('');
 
-  const { data: countries = [], isLoading: isCountriesLoading } = useCountries({countrySearch, ensureSessionIsValid});
+  const { data: countries = [], isLoading: isCountriesLoading } = useCountries({ countrySearch, ensureSessionIsValid });
   const { data: regions = [], isLoading: isRegionsLoading } = useRegions(formData.countryCode);
   const { data: cities = [], isLoading: isCitiesLoading } = useCities(formData.countryCode, formData.regionCode);
 
@@ -95,19 +89,20 @@ function useBusinessForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     const isValid = handleValidateFields()
     console.log(isValid, formData)
-    if(isValid){
+    if (isValid) {
       setFormLoading(true);
-      setTimeout(() => {
-        setFormLoading(false);
+      const result = await saveBusiness(formData);
+      setFormLoading(false);
+
+      if (result) {
         setFormSuccess(true);
         setTimeout(() => {
           closeBusinessModal()
-      }, 1000);
-      }, 1000);
-      
+        }, 1000);
+      }
     }
   };
 
