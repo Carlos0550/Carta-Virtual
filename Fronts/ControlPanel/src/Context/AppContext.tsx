@@ -3,6 +3,7 @@ import WidthUtil from "./ContextUtils/WidthUtil";
 import type { AppContextTypes } from "./ContextTypes";
 import useAuth from "./ContextHooks/useAuth";
 import useModal from "./ContextHooks/useModal";
+import useBusiness from "./ContextHooks/useBusiness";
 
 const AppContext = createContext<AppContextTypes | null>(null);
 
@@ -17,13 +18,21 @@ export const useAppContext = () => {
 export const AppContextProvider = ({ children }: any) => {
     const width = WidthUtil().width
     const useAuthHook = useAuth()
+    
     const useModalHook = useModal()
+
+    const businessHooks = useBusiness()
+    
     const ContextValues = useMemo(() => ({
-        width, useAuthHook,
-        useModalHook,
+        width, 
+        useAuthHook,
+        useModalHook, 
+        businessHooks
     }),[
-        width, useAuthHook,
-        useModalHook
+        width, 
+        useAuthHook,
+        useModalHook, 
+        businessHooks
     ])
     return <AppContext.Provider value={ContextValues}>{children}</AppContext.Provider>;
 };
