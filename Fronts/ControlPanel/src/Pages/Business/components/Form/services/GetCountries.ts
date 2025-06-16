@@ -33,6 +33,7 @@ export const GetCountries = async ({ countrySearch }: Props): Promise<{
     const responseData = await res.json();
     const data = responseData.countries || [];
 
+    await new Promise(resolve => setTimeout(resolve, 500));
     return {
       msg: "Países obtenidos correctamente",
       data,

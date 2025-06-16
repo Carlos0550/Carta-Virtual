@@ -3,7 +3,6 @@ import { endpoints } from "../../../../../Context/ContextUtils/Apis";
 interface Props {
   countryCode: string;
   regionCode: string;
-  citySearch: string; // opcional, no usado
 }
 
 export interface City {
@@ -44,6 +43,7 @@ export const GetCities = async ({ countryCode, regionCode }: Props): Promise<{
     const responseData = await res.json();
     const cities = responseData.cities || [];
 
+    await new Promise(resolve => setTimeout(resolve, 500));
     return {
       msg: "Ciudades obtenidas correctamente",
       cities,
