@@ -11,10 +11,54 @@ from .connections.pg_database import db
 
 from datetime import timedelta
 from flask_jwt_extended import JWTManager
+import requests
 load_dotenv()
 
 mail = Mail()
 jwt = JWTManager()
+
+import os
+import requests
+from tqdm import tqdm
+
+def download_geo_data():
+    """
+    Descarga el archivo de geodatos mostrando una barra de progreso.
+    """
+    BASE_DIR = os.path.dirname(__file__)
+    TARGET_DIR = os.path.normpath(
+        os.path.join(BASE_DIR, "services", "utils", "geoDB")
+    )
+    os.makedirs(TARGET_DIR, exist_ok=True)
+
+    TARGET_FILE = "countries+states+cities.json"
+    FILE_PATH = os.path.join(TARGET_DIR, TARGET_FILE)
+
+    if os.path.isfile(FILE_PATH):
+        print(f"[download_geo_data] Archivo ya existe: {FILE_PATH}")
+        return FILE_PATH
+
+    url = os.getenv("GEO_DATA_URL")
+    if not url:
+        raise RuntimeError("La variable de entorno GEO_DATA_URL no está definida")
+
+    resp = requests.get(url, stream=True)
+    resp.raise_for_status()
+
+    total_size = int(resp.headers.get('Content-Length', 0))
+
+    with open(FILE_PATH, "wb") as f, tqdm(
+        total=total_size, unit='B', unit_scale=True, desc="Descargando geoDB"
+    ) as bar:
+        for chunk in resp.iter_content(chunk_size=8192):
+            if chunk:
+                f.write(chunk)
+                bar.update(len(chunk))
+
+    print(f"[download_geo_data] Geo data descargado en: {FILE_PATH}")
+    return FILE_PATH
+
+
 def create_app():
     env = os.getenv("FLASK_ENV", "development")
     app = Flask(__name__)
@@ -42,4 +86,6 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(geo_bp, url_prefix="/geodata")
 
+    
+    download_geo_data()
     return app

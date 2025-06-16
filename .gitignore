@@ -7,3 +7,4 @@ server/app/services/__pycache__/auth_services.cpython-313.pyc
 server/app/services/__pycache__/users_services.cpython-313.pyc
 server/.env
 Fronts/ControlPanel/.env
+server/app/services/utils/geoDB/countries+states+cities.json
