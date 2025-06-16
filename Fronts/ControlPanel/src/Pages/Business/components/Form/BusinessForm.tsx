@@ -1,4 +1,4 @@
-import { Flex, Notification, TextInput, Button, Text, Select, Loader, Textarea } from '@mantine/core';
+import { Flex, Notification, TextInput, Button, Select, Loader, Textarea, Paper, Text } from '@mantine/core';
 import { useMemo } from 'react';
 import useBusinessForm from './Hooks/useBusinessForm';
 
@@ -26,26 +26,32 @@ function BusinessForm() {
     handleSubmit,
     handleChange,
     handleSelectChange,
-    setCountrySearch,
-    setRegionSearch,
-    setCitySearch,
+    setCountrySearch
   } = useBusinessForm();
 
-  // Funciones debounced para los campos de búsqueda
   const debouncedCountrySearch = useMemo(() => debounce(setCountrySearch, 400), [setCountrySearch]);
-  const debouncedRegionSearch = useMemo(() => debounce(setRegionSearch, 800), [setRegionSearch]);
-  const debouncedCitySearch = useMemo(() => debounce(setCitySearch, 800), [setCitySearch]);
+    
   
-  // No renderizar el formulario si el envío fue exitoso.
   if (formSuccess) {
     return (
-      <Notification
-        title="Éxito"
-        color="green"
-        onClose={() => window.location.reload()} // O manejar el estado de éxito de otra forma
+      <Paper
+        withBorder
+        p="md"
+        radius="md"
+        style={{ maxWidth: 600, margin: '0 auto'}}
+        
       >
-        Negocio guardado exitosamente. La página se recargará.
-      </Notification>
+        <Flex
+          direction="column"
+          align="center"
+          justify="center"
+          gap="md"
+        >
+          <Text size="lg" fw={500} c={'#2c2c2c'}>
+          🎉 Negocio guardado exitosamente.
+        </Text>
+        </Flex>
+      </Paper>
     );
   }
 
@@ -70,7 +76,6 @@ function BusinessForm() {
           data={regions}
           value={formData.regionCode || null}
           onChange={(value) => handleSelectChange('regionCode', value)}
-          onSearchChange={debouncedRegionSearch}
           disabled={!formData.countryCode || isRegionsLoading}
           error={formErrors.regionCode}
           searchable
@@ -83,7 +88,6 @@ function BusinessForm() {
           data={cities}
           value={formData.city || null}
           onChange={(value) => handleSelectChange('city', value)}
-          onSearchChange={debouncedCitySearch}
           disabled={!formData.regionCode || isCitiesLoading}
           error={formErrors.city}
           searchable
@@ -97,7 +101,7 @@ function BusinessForm() {
           value={formData.business_name}
           onChange={handleChange}
           error={formErrors.business_name}
-          required
+          
         />
         <Textarea
           label="Descripción del Negocio"
@@ -105,6 +109,7 @@ function BusinessForm() {
           placeholder="Una breve descripción de lo que hace tu negocio"
           value={formData.business_description}
           onChange={handleChange}
+          error={formErrors.business_description}
         />
         <TextInput
           label="Dirección (Calle y Número)"
@@ -113,7 +118,7 @@ function BusinessForm() {
           value={formData.business_address1}
           onChange={handleChange}
           error={formErrors.business_address1}
-          required
+          
         />
         <TextInput
           label="Teléfono"
@@ -122,7 +127,7 @@ function BusinessForm() {
           value={formData.business_phone}
           onChange={handleChange}
           error={formErrors.business_phone}
-          required
+          
         />
         <TextInput
           label="Correo Electrónico"
@@ -132,14 +137,8 @@ function BusinessForm() {
           value={formData.business_email}
           onChange={handleChange}
           error={formErrors.business_email}
-          required
+          
         />
-
-        {formErrors.general && (
-          <Text color="red" size="sm">
-            {formErrors.general}
-          </Text>
-        )}
 
         <Button type="submit" loading={formLoading} fullWidth mt="md">
           Guardar Negocio
