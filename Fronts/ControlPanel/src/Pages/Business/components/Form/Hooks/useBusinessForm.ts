@@ -1,7 +1,9 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useCountries } from "./useCountries";
 import { useRegions } from "./useRegions";
 import { useCities } from "./useCities";
+import useSessionValidator from "../../../../../Context/ContextUtils/useSessionValidator";
+import { useAppContext } from "../../../../../Context/AppContext";
 
 export interface BusinessFormData {
   business_name: string;
@@ -28,15 +30,19 @@ const initialFormData: BusinessFormData = {
 };
 
 function useBusinessForm() {
+  const {
+    useModalHook:{
+      closeBusinessModal
+    }
+  } = useAppContext()
+  const { ensureSessionIsValid } = useSessionValidator()
   const [formData, setFormData] = useState<BusinessFormData>(initialFormData);
   const [formErrors, setFormErrors] = useState<BusinessFormErrors>({});
   const [formLoading, setFormLoading] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
   const [countrySearch, setCountrySearch] = useState('');
-  const [regionSearch, setRegionSearch] = useState('');
-  const [citySearch, setCitySearch] = useState('');
 
-  const { data: countries = [], isLoading: isCountriesLoading } = useCountries(countrySearch);
+  const { data: countries = [], isLoading: isCountriesLoading } = useCountries({countrySearch, ensureSessionIsValid});
   const { data: regions = [], isLoading: isRegionsLoading } = useRegions(formData.countryCode);
   const { data: cities = [], isLoading: isCitiesLoading } = useCities(formData.countryCode, formData.regionCode);
 
@@ -54,20 +60,56 @@ function useBusinessForm() {
     }));
   };
 
+  const handleValidateFields = () => {
+    const errors: BusinessFormErrors = {};
+
+    if (!formData.business_name) {
+      errors.business_name = 'El nombre del negocio es obligatorio.';
+    }
+
+    if (!formData.business_description) {
+      errors.business_description = 'La descripción del negocio es obligatoria.';
+    }
+    if (!formData.business_address1) {
+      errors.business_address1 = 'La dirección es obligatoria.';
+    }
+    if (!formData.countryCode) {
+      errors.countryCode = 'Debes seleccionar un país.';
+    }
+    if (!formData.regionCode) {
+      errors.regionCode = 'Debes seleccionar una provincia o estado.';
+    }
+    if (!formData.city) {
+      errors.city = 'Debes seleccionar una ciudad.';
+    }
+    if (!formData.business_phone) {
+      errors.business_phone = 'El teléfono es obligatorio.';
+    }
+    if (!formData.business_email) {
+      errors.business_email = 'El correo electrónico es obligatorio.';
+    }
+
+    setFormErrors(errors);
+    return Object.keys(errors).length === 0;
+  }
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFormLoading(true);
-
-    // Validación y envío pendiente...
-    setTimeout(() => {
-      setFormLoading(false);
-      setFormSuccess(true);
-    }, 1000);
+    
+    const isValid = handleValidateFields()
+    console.log(isValid, formData)
+    if(isValid){
+      setFormLoading(true);
+      setTimeout(() => {
+        setFormLoading(false);
+        setFormSuccess(true);
+        setTimeout(() => {
+          closeBusinessModal()
+      }, 1000);
+      }, 1000);
+      
+    }
   };
-
-  useEffect(()=>{
-    console.log(formData)
-  },[formData])
 
   return {
     formData,
@@ -83,9 +125,7 @@ function useBusinessForm() {
     handleSubmit,
     handleChange,
     handleSelectChange,
-    setCountrySearch,
-    setRegionSearch,
-    setCitySearch,
+    setCountrySearch
   };
 }
 
