@@ -35,6 +35,7 @@ export interface BusinessData{
   business_geodata: BusinessGeodata;
   business_phone: string;
   business_email: string;
+  business_banner: string
 }
 
 export interface HandleEditBInfo{
