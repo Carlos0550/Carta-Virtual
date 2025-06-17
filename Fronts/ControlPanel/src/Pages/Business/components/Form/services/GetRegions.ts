@@ -37,7 +37,6 @@ export const GetRegions = async ({ countryCode }: Props): Promise<{
     const responseData = await res.json();
     const regions = responseData.regions || [];
 
-    await new Promise(resolve => setTimeout(resolve, 500));
     return {
       msg: "Regiones obtenidas correctamente",
       regions,

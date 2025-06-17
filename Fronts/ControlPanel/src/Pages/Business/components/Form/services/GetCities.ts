@@ -43,7 +43,6 @@ export const GetCities = async ({ countryCode, regionCode }: Props): Promise<{
     const responseData = await res.json();
     const cities = responseData.cities || [];
 
-    await new Promise(resolve => setTimeout(resolve, 500));
     return {
       msg: "Ciudades obtenidas correctamente",
       cities,
