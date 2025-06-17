@@ -9,19 +9,25 @@ business_routes = Blueprint('business_routes', __name__)
 @jwt_required()
 def create_business_route():
     user_id = get_jwt_identity()
-    data = request.get_json()
-
-    if not data:
-        return jsonify({"message": "No data provided"}), 400
 
     try:
-        business_data = BusinessPayload(**data)
+        business_data: BusinessPayload = {
+            "business_name": request.form.get("business_name"),
+            "business_description": request.form.get("business_description"),
+            "business_address1": request.form.get("business_address1"),
+            "countryCode": request.form.get("countryCode"),
+            "regionCode": request.form.get("regionCode"),
+            "city": request.form.get("city"),
+            "business_phone": request.form.get("business_phone"),
+            "business_email": request.form.get("business_email"),
+            "business_image": request.files.get("business_image") 
+        }
     except Exception as e:
-        return jsonify({"message": str(e)}), 400
+        return jsonify({"message": f"Error al procesar los datos del formulario: {str(e)}"}), 400
 
     response = create_business(business_data, user_id)
 
-    if isinstance(response, tuple):
+    if isinstance(response, tuple): 
         return response
 
     return jsonify(response), 201
