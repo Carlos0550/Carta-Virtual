@@ -22,19 +22,29 @@ function useBusiness() {
         setBusinessData(null)
     }, [businessData, setBusinessData])
 
-    const saveBusiness = useCallback(async (formData: BusinessFormData): Promise<boolean> => {
+    const saveBusiness = useCallback(async (formData: BusinessFormData, fileData: File): Promise<boolean> => {
         await ensureSessionIsValid()
         const access_token = localStorage.getItem('access_token')
 
         const url = new URL(`${endpoints.business}/save`)
+        const form = new FormData()
+
+        Object.entries(formData).forEach(([key, value]) => {
+            if(value !== undefined && value !== null){
+                form.append(key, value)
+            }
+        })
+
+        if(fileData){
+            form.append("business_image", fileData)
+        }
         try {
             const response = await fetch(url.toString(), {
                 method: 'POST',
                 headers: {
-                    'Content-Type': 'application/json',
                     "Authorization": `Bearer ${access_token}`,
                 },
-                body: JSON.stringify(formData),
+                body: form,
             });
 
             const respData: saveBusinessResp = await response.json();
@@ -75,6 +85,7 @@ function useBusiness() {
                 },
             });
             const respData: retrieveBusinessResp = await response.json();
+            console.log(respData)
             if (!response.ok) throw new Error(respData.msg || 'Error al recuperar los datos del negocio')
             setBusinessData(respData.business)
             return true
