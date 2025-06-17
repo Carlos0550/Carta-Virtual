@@ -22,7 +22,7 @@ interface BusinessHooks{
     businessData: BusinessData | null,
     setBusinessData: React.Dispatch<React.SetStateAction<BusinessData | null>>,
     clearBusinessData: () => void,
-    saveBusiness: (formData: BusinessFormData) => Promise<boolean>,
+    saveBusiness: (formData: BusinessFormData, fileData: File) => Promise<boolean>,
     retrieveBusinessData: () => Promise<boolean>
 }
 
