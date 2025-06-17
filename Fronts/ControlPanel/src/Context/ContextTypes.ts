@@ -22,7 +22,8 @@ interface BusinessHooks{
     businessData: BusinessData | null,
     setBusinessData: React.Dispatch<React.SetStateAction<BusinessData | null>>,
     clearBusinessData: () => void,
-    saveBusiness: (formData: BusinessFormData) => Promise<boolean>
+    saveBusiness: (formData: BusinessFormData) => Promise<boolean>,
+    retrieveBusinessData: () => Promise<boolean>
 }
 
 export interface AppContextTypes{
