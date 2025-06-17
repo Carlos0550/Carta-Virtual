@@ -1,3 +1,7 @@
+import type React from "react";
+import type { BusinessModal } from "./ModalTypes";
+import type { SetStateAction } from "react";
+
 export interface BusinessFormData {
   business_name: string;
   business_description: string;
@@ -31,4 +35,10 @@ export interface BusinessData{
   business_geodata: BusinessGeodata;
   business_phone: string;
   business_email: string;
+}
+
+export interface HandleEditBInfo{
+  businessData: BusinessData,
+  setBusinessModal: React.Dispatch<SetStateAction<BusinessModal | null>>,
+  CloseBusinessModal: () => void
 }
