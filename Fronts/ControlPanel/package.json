@@ -16,6 +16,7 @@
     "@mantine/modals": "^8.0.2",
     "@mantine/notifications": "^8.0.2",
     "@tanstack/react-query": "^5.80.7",
+    "browser-image-compression": "^2.0.2",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-icons": "^5.5.0",
