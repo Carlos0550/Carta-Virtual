@@ -11,6 +11,7 @@
     flex-direction: column;
     justify-content: space-evenly;
     gap: 1rem;
+    
     list-style: none;
     padding: 0 10px;
 }
