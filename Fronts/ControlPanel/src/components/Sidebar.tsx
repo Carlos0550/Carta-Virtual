@@ -38,6 +38,7 @@ function Sidebar({ mobileExtended, setMobileExtended }: Props) {
                         <Flex
                             align={"center"}
                             justify={"center"}
+                            
                         >
                             <Text className='sidebar-logo' size={"1.5rem"} fw={700}>GastroLink</Text>
                             <picture className="sidebar-logo-img">
@@ -47,7 +48,11 @@ function Sidebar({ mobileExtended, setMobileExtended }: Props) {
 
                         <Box className="sidebar-divider" />
 
-                        <Box
+                        <Flex
+                            direction={"column"}
+                            gap={10}
+                        >
+                            <Box
                             className={`sidebar-list ${location.pathname === "/" ? "active" : ""}`}
                             onClick={() => navigate("/")}
 
@@ -82,6 +87,7 @@ function Sidebar({ mobileExtended, setMobileExtended }: Props) {
                         >
                             <BiQr size={20} /> Mi QR
                         </Box>
+                        </Flex>
 
                         <Box className="sidebar-divider" />
                     </Box>
