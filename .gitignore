@@ -25,3 +25,4 @@ server/app/services/__pycache__/geo_services.cpython-313.pyc
 server/app/validations/__pycache__/AuthTypes.cpython-313.pyc
 server/app/validations/__pycache__/BusinessType.cpython-313.pyc
 server/app/validations/__pycache__/UserTypes.cpython-313.pyc
+server/app/connections/__pycache__/cloudinary_conn.cpython-313.pyc
