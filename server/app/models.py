@@ -24,7 +24,7 @@ class Business(db.Model):
     business_email = db.Column(db.String, nullable=False)
     business_description = db.Column(db.String, nullable=True)
     business_user_id = db.Column(UUID(as_uuid=True), db.ForeignKey('users.user_id'), nullable=False)
-
+    business_banner = db.Column(db.String, nullable=True)
     def serialize(self, include=None):
         data = {
             "business_name": self.business_name,
@@ -32,6 +32,7 @@ class Business(db.Model):
             "business_phone": self.business_phone,
             "business_email": self.business_email,
             "business_description": self.business_description,
+            "business_banner": self.business_banner
         }
         if include:
             data = {k: v for k, v in data.items() if k in include}
