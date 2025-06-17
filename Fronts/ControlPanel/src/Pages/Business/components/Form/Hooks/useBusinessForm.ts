@@ -5,6 +5,7 @@ import { useCities } from "./useCities";
 import useSessionValidator from "../../../../../Context/ContextUtils/useSessionValidator";
 import { useAppContext } from "../../../../../Context/AppContext";
 import type { BusinessFormData } from "../../../../../Context/HookTypes/BusinessTypes";
+import useFileUploader from "./useFileUploader";
 
 
 type BusinessFormErrors = Partial<Record<keyof BusinessFormData | 'general', string>>;
@@ -29,6 +30,7 @@ function useBusinessForm() {
       saveBusiness
     }
   } = useAppContext()
+
   const { ensureSessionIsValid } = useSessionValidator()
   const [formData, setFormData] = useState<BusinessFormData>(initialFormData);
   const [formErrors, setFormErrors] = useState<BusinessFormErrors>({});
@@ -39,6 +41,8 @@ function useBusinessForm() {
   const { data: countries = [], isLoading: isCountriesLoading } = useCountries({ countrySearch, ensureSessionIsValid });
   const { data: regions = [], isLoading: isRegionsLoading } = useRegions(formData.countryCode);
   const { data: cities = [], isLoading: isCitiesLoading } = useCities(formData.countryCode, formData.regionCode);
+
+  const { fileData, setFileData, handleUpload, processingFile } = useFileUploader()
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -91,10 +95,10 @@ function useBusinessForm() {
     e.preventDefault();
 
     const isValid = handleValidateFields()
-    console.log(isValid, formData)
+    
     if (isValid) {
       setFormLoading(true);
-      const result = await saveBusiness(formData);
+      const result = await saveBusiness(formData, fileData!);
       setFormLoading(false);
 
       if (result) {
@@ -120,7 +124,11 @@ function useBusinessForm() {
     handleSubmit,
     handleChange,
     handleSelectChange,
-    setCountrySearch
+    setCountrySearch,
+    fileData, 
+    setFileData, 
+    handleUpload,
+    processingFile
   };
 }
 
