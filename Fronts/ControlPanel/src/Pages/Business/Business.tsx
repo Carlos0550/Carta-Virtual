@@ -77,7 +77,6 @@ function Business() {
       </Flex>
     )
   }
-
   return (
     <Flex direction="column" style={{ height: "100vh", padding: 24 }} align="center" gap="md">
       <Title order={width > 600 ? 2 : 3} style={{ alignSelf: "flex-start" }}>
@@ -114,9 +113,8 @@ function Business() {
             overflow: "hidden"
           }}
         >
-          {/* Imagen de portada */}
           <img
-            src={randomImage}
+            src={businessData.business_banner !== null ? businessData.business_banner : randomImage}
             alt="Portada del negocio"
             style={{
               width: "100%",
