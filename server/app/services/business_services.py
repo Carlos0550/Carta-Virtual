@@ -85,3 +85,18 @@ def create_business(data: BusinessPayload, user_id: str) -> Dict[str, str]:
         "msg": "Negocio creado exitosamente",
         "newBusinessData": newBusiness.serialize()
     }), 201
+
+
+def get_business_by_user(user_id: str):
+    business = Business.query.filter_by(business_user_id=user_id).first()
+    if not business:
+        return jsonify({
+            "msg": "No se encontró ningún negocio para este usuario"
+        }), 404
+
+    return jsonify({
+        "msg": "Negocio encontrado",
+        "business": business.serialize()
+    }), 200
+
+    
