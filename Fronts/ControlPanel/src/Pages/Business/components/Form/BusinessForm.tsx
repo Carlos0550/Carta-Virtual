@@ -1,8 +1,8 @@
-import { Flex, Notification, TextInput, Button, Select, Loader, Textarea, Paper, Text } from '@mantine/core';
-import { useMemo } from 'react';
+import { Flex, TextInput, Button, Select, Loader, Textarea, Paper, Text } from '@mantine/core';
+import { useEffect, useMemo } from 'react';
 import useBusinessForm from './Hooks/useBusinessForm';
-
-// Función debounce puede vivir fuera del componente para no ser redeclarada.
+import "./FormStyles.css"
+import { RxCross1 } from "react-icons/rx";
 const debounce = (fn: (...args: any[]) => void, delay: number) => {
   let timeoutId: ReturnType<typeof setTimeout>;
   return (...args: any[]) => {
@@ -26,20 +26,26 @@ function BusinessForm() {
     handleSubmit,
     handleChange,
     handleSelectChange,
-    setCountrySearch
+    setCountrySearch,
+    handleUpload,
+    processingFile,
+    fileData,
+    setFileData
   } = useBusinessForm();
 
   const debouncedCountrySearch = useMemo(() => debounce(setCountrySearch, 400), [setCountrySearch]);
-    
   
+  useEffect(() => {
+    console.log(fileData)
+  },[fileData])
   if (formSuccess) {
     return (
       <Paper
         withBorder
         p="md"
         radius="md"
-        style={{ maxWidth: 600, margin: '0 auto'}}
-        
+        style={{ maxWidth: 600, margin: '0 auto' }}
+
       >
         <Flex
           direction="column"
@@ -48,12 +54,16 @@ function BusinessForm() {
           gap="md"
         >
           <Text size="lg" fw={500} c={'#2c2c2c'}>
-          🎉 Negocio guardado exitosamente.
-        </Text>
+            🎉 Negocio guardado exitosamente.
+          </Text>
         </Flex>
       </Paper>
     );
   }
+
+  function createPreviewUrl(file: File | Blob): string {
+  return URL.createObjectURL(file)
+}
 
   return (
     <form onSubmit={handleSubmit}>
@@ -101,7 +111,7 @@ function BusinessForm() {
           value={formData.business_name}
           onChange={handleChange}
           error={formErrors.business_name}
-          
+
         />
         <Textarea
           label="Descripción del Negocio"
@@ -118,7 +128,7 @@ function BusinessForm() {
           value={formData.business_address1}
           onChange={handleChange}
           error={formErrors.business_address1}
-          
+
         />
         <TextInput
           label="Teléfono"
@@ -127,7 +137,7 @@ function BusinessForm() {
           value={formData.business_phone}
           onChange={handleChange}
           error={formErrors.business_phone}
-          
+
         />
         <TextInput
           label="Correo Electrónico"
@@ -137,10 +147,55 @@ function BusinessForm() {
           value={formData.business_email}
           onChange={handleChange}
           error={formErrors.business_email}
-          
+
         />
 
-        <Button type="submit" loading={formLoading} fullWidth mt="md">
+        {!fileData ? (
+          !processingFile? (
+          <div
+            className='file-uploader-container'
+            onClick={() => document.getElementById('fileInput')!.click()}
+          >
+            <Flex mt={5} justify={"center"} align={"center"}>
+              <span className="file-uploader-icon">📁</span>
+              <p className="file-uploader-title">Añadir imagen</p>
+            </Flex>
+            <p className="file-uploader-subtext">Arrastrá o hacé click aquí</p>
+            <input
+              id="fileInput"
+              type='file'
+              accept='video/*, image/*'
+              style={{ display: 'none' }}
+              onChange={handleUpload}
+            />
+          </div>
+
+        ) : (
+          <div className='processing-file-container'>
+            <div className="loader"></div>
+            <div className="loader"></div>
+            <div className="loader"></div>
+          </div>
+        )
+        ) : (
+          <div 
+            className='picture-preview-container'
+          >
+            <div className='delete-preview-btn'
+              onClick={() => setFileData(null)}
+            >
+              <RxCross1 color='red' size={18}/>
+            </div>
+            <picture
+            className='image-preview'
+          >
+            <img src={createPreviewUrl(fileData)} alt="" />
+          </picture>
+          </div>
+        )}
+
+
+        <Button type="submit" loading={formLoading} disabled={formLoading || processingFile} fullWidth mt="md" >
           Guardar Negocio
         </Button>
       </Flex>
