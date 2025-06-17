@@ -1,4 +1,5 @@
-from typing import TypedDict
+from typing import TypedDict, Optional
+from werkzeug.datastructures import FileStorage
 
 class BusinessPayload(TypedDict):
     business_name: str
@@ -9,3 +10,4 @@ class BusinessPayload(TypedDict):
     city: str
     business_phone: str
     business_email: str
+    business_image: Optional[FileStorage]
