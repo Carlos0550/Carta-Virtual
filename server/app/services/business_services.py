@@ -1,9 +1,11 @@
 from ..models import Business
 from ..connections.pg_database import db
+from ..connections.cloudinary_conn import cloudinary
 from ..validations.BusinessType import BusinessPayload
 from typing import Dict
 from .geo_services import _load_countries_data
 from flask import jsonify
+from werkzeug.datastructures import FileStorage
 
 def getGeoData(countryCode: str, regionCode: int, city: str) -> Dict[str, str]:
     try:
@@ -40,6 +42,13 @@ def getGeoData(countryCode: str, regionCode: int, city: str) -> Dict[str, str]:
         print(f"Error al obtener datos geográficos: {e}")
         return {"msg": "Error interno al obtener datos geográficos"}, 500
 
+def UploadImageToCloudinary(image:FileStorage)-> str:
+    try:
+        upload_result = cloudinary.uploader.upload(image, folder="businesses")
+        return upload_result.get("secure_url", "")
+    except Exception as e:
+        print(e)
+        return ""
 
 def create_business(data: BusinessPayload, user_id: str) -> Dict[str, str]:
     sameBusiness = Business.query.filter_by(business_name=data['business_name']).first()
@@ -49,6 +58,10 @@ def create_business(data: BusinessPayload, user_id: str) -> Dict[str, str]:
     geo_response = getGeoData(data['countryCode'], data['regionCode'], data['city'])
     if isinstance(geo_response, tuple):  
         return geo_response
+    
+    image_url = ""
+    if data["business_image"]:
+       image_url = UploadImageToCloudinary(data["business_image"])
     
     newBusiness = Business(
         business_name=data['business_name'],
@@ -70,7 +83,8 @@ def create_business(data: BusinessPayload, user_id: str) -> Dict[str, str]:
         business_phone=data['business_phone'],
         business_email=data['business_email'],
         business_description=data.get('business_description', None),
-        business_user_id=user_id
+        business_user_id=user_id,
+        business_banner = image_url
     )
 
     try:
@@ -93,7 +107,6 @@ def get_business_by_user(user_id: str):
         return jsonify({
             "msg": "No se encontró ningún negocio para este usuario"
         }), 404
-
     return jsonify({
         "msg": "Negocio encontrado",
         "business": business.serialize()
