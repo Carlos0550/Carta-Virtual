@@ -5,9 +5,10 @@ import { GiMeal } from 'react-icons/gi';
 import { IoFastFood } from 'react-icons/io5';
 
 import { TbCategoryFilled } from "react-icons/tb";
+import Categories from './components/Categories/Categories';
 
 function MenuConfig() {
-    const [activeTab, setActiveTab] = useState<string | null>('first');
+    const [activeTab, setActiveTab] = useState<string | null>('categorias');
   return (
     <Flex
         direction={"column"}
@@ -25,6 +26,9 @@ function MenuConfig() {
                 <Tabs.Tab value="especiales" leftSection={<FaRegStar size={18}/>}>Especiales</Tabs.Tab>
                 <Tabs.Tab value="combos" leftSection={<GiMeal size={18}/>}>Combos</Tabs.Tab>
             </Tabs.List>
+            <Tabs.Panel value='categorias'>
+                <Categories/>
+            </Tabs.Panel>
         </Tabs>
     </Flex>
   )
