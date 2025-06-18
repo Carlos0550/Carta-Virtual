@@ -17,8 +17,8 @@ class Users(db.Model):
 
 class Business(db.Model):
     __tablename__ = "business"
-    
-    business_name = db.Column(db.String, primary_key=True, unique=True, nullable=False)
+    business_id = db.Column(UUID, primary_key=True, server_default=db.text("gen_random_uuid()"))
+    business_name = db.Column(db.String, unique=True, nullable=False)
     business_geodata = db.Column(JSONB, nullable=False)
     business_phone = db.Column(db.String, nullable=False)
     business_email = db.Column(db.String, nullable=False)
@@ -27,6 +27,7 @@ class Business(db.Model):
     business_banner = db.Column(db.String, nullable=True)
     def serialize(self, include=None):
         data = {
+            "business_id": self.business_id,
             "business_name": self.business_name,
             "business_geodata": self.business_geodata,
             "business_phone": self.business_phone,
