@@ -5,8 +5,10 @@ from ..validations.BusinessType import BusinessPayload
 from typing import Dict
 from .geo_services import _load_countries_data
 from flask import jsonify
-from werkzeug.datastructures import FileStorage
 
+from werkzeug.datastructures import FileStorage
+from urllib.parse import urlparse
+import os
 def getGeoData(countryCode: str, regionCode: int, city: str) -> Dict[str, str]:
     try:
         geodata = _load_countries_data()
@@ -49,6 +51,20 @@ def UploadImageToCloudinary(image:FileStorage)-> str:
     except Exception as e:
         print(e)
         return ""
+    
+def DeleteFromCloudinary(image_url:str)-> str:
+    try:
+        path = urlparse(image_url).path
+
+        public_id_with_ext = path.split("/")[-2:]
+        public_id = "/".join(public_id_with_ext).rsplit(".",1)[0]
+        print("Public ID:", public_id)
+        delete_result = cloudinary.uploader.destroy(public_id)
+        print("Resultado Cloudinary:", delete_result)
+        return delete_result.get("result", "error")
+    except Exception as e:
+        print("Error al eliminar imagen en Cloudinary:", e)
+        return "error"
 
 def create_business(data: BusinessPayload, user_id: str) -> Dict[str, str]:
     sameBusiness = Business.query.filter_by(business_name=data['business_name']).first()
@@ -92,6 +108,8 @@ def create_business(data: BusinessPayload, user_id: str) -> Dict[str, str]:
         db.session.commit()
     except Exception as e:
         print(e)
+        if image_url:
+            DeleteFromCloudinary(image_url)
         db.session.rollback()
         return jsonify({"msg": "Error al crear el negocio: " + str(e)}), 500
 
