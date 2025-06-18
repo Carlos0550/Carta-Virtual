@@ -65,9 +65,9 @@ function useBusinessForm() {
       errors.business_name = 'El nombre del negocio es obligatorio.';
     }
 
-    if (!formData.business_description) {
-      errors.business_description = 'La descripción del negocio es obligatoria.';
-    }
+    // if (!formData.business_description) {
+    //   errors.business_description = 'La descripción del negocio es obligatoria.';
+    // }
     if (!formData.business_address1) {
       errors.business_address1 = 'La dirección es obligatoria.';
     }
