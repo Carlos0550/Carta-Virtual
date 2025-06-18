@@ -2,6 +2,8 @@ import type React from "react"
 import type { LoginData, UserInfo } from "./HookTypes/AuthTypes"
 import type { BusinessModal } from "./HookTypes/ModalTypes"
 import type { BusinessData, BusinessFormData } from "./HookTypes/BusinessTypes"
+import type { CategoriesModal } from "./HookTypes/Categories"
+import type { SetStateAction } from "react"
 
 interface AuthHooks{
     loginData: LoginData, 
@@ -14,8 +16,12 @@ interface AuthHooks{
 
 interface ModalHooks{
     businessModal: BusinessModal | null, 
-    setBusinessModal: React.Dispatch<React.SetStateAction<BusinessModal | null>>
-    closeBusinessModal: () => void
+    setBusinessModal: React.Dispatch<React.SetStateAction<BusinessModal>>
+    closeBusinessModal: () => void,
+
+    closeCategoriesModal: () => void, 
+    categoriesModal: CategoriesModal | null, 
+    setCategoriesModal: React.Dispatch<SetStateAction<CategoriesModal>>
 }
 
 interface BusinessHooks{
