@@ -2,7 +2,7 @@ from flask import Blueprint, jsonify, request
 from ..validations.AuthTypes import LoginRequest
 from typing import cast
 
-from ..services.auth_services import loginUser, validate_and_login
+from app.services.Auth.auth_services import loginUser, validate_and_login
 from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_jwt_identity
 from datetime import timedelta
 auth_bp = Blueprint("auth", __name__)
