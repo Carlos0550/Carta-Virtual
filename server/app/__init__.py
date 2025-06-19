@@ -14,6 +14,7 @@ from .routes.users_routes import users_bp
 from .routes.auth_routes import auth_bp
 from .routes.geo_routes import geo_bp
 from .routes.business_routes import business_routes
+from .routes.categories_routes import categories_routes
 
 from .connections.pg_database import db
 load_dotenv()
@@ -31,7 +32,7 @@ def download_geo_data():
     """
     BASE_DIR = os.path.dirname(__file__)
     TARGET_DIR = os.path.normpath(
-        os.path.join(BASE_DIR, "services", "utils", "geoDB")
+        os.path.join(BASE_DIR, "services","Geographic")
     )
     os.makedirs(TARGET_DIR, exist_ok=True)
 
@@ -92,6 +93,7 @@ def create_app():
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(geo_bp, url_prefix="/geodata")
     app.register_blueprint(business_routes, url_prefix="/business")
+    app.register_blueprint(categories_routes, url_prefix="/categories")
     
     download_geo_data()
     return app
