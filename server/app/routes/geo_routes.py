@@ -1,4 +1,4 @@
-from ..services.geo_services import get_countries, get_regions, get_cities
+from app.services.Geographic.geo_services import get_countries, get_regions, get_cities
 from flask_jwt_extended import jwt_required
 from flask import Blueprint, jsonify, request
 

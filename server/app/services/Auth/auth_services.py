@@ -1,15 +1,15 @@
-from ..emails.UserLoginMail import sendUserOTPLogin
-from ..connections.redis_conn import r
+from app.emails.UserLoginMail import sendUserOTPLogin
+from app.connections.redis_conn import r
 
-from ..connections.pg_database import db
-from ..validations.AuthTypes import LoginRequest
-from ..models import Users
+from app.connections.pg_database import db
+from app.validations.AuthTypes import LoginRequest
+from app.models import Users
 
 from flask import jsonify, make_response
-from datetime import timedelta, time, datetime
+from datetime import timedelta
 from flask_jwt_extended import create_access_token, create_refresh_token, set_refresh_cookies
 
-from ..services.users_services import generate_and_send_otp
+from ..Users.users_services import generate_and_send_otp
 
 def loginUser(data: LoginRequest):
     try:
@@ -82,11 +82,11 @@ def validate_and_login(user_email:str, otp_code:str):
             "user_email": founded_user.user_email
         }
 
-        now = datetime.now()
+        #now = datetime.now()
 
-        tomorrow_midnight = datetime.combine(now.date() + timedelta(days=1), time.min)
+        #tomorrow_midnight = datetime.combine(now.date() + timedelta(days=1), time.min)
 
-        expires_delta = tomorrow_midnight - now
+        #expires_delta = tomorrow_midnight - now
 
         access_token = create_access_token(
             identity=user_identity,

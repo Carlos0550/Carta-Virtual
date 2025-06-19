@@ -1,5 +1,5 @@
 from flask import Blueprint, jsonify, request
-from ..services.users_services import create_user, validate_opt, restart_user_validation
+from app.services.Users.users_services import create_user, validate_opt, restart_user_validation
 from typing import cast
 from ..validations.UserTypes import UserPayload, OtpValidation
 
