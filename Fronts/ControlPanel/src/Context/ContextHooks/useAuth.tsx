@@ -166,7 +166,7 @@ function useAuth() {
 
       const responseD = await result.json()
       const { access_token, user_data, msg } = responseD
-      console.log(responseD)
+
       if (!result.ok) throw new Error(msg || "Error desconocido.")
       localStorage.setItem("access_token", access_token);
 
