@@ -1,8 +1,9 @@
 import { Flex, Title, Text, Button, Card, Center, Stack, Divider, Group, Badge } from "@mantine/core"
 import { useAppContext } from "../../Context/AppContext"
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useMemo, } from "react"
 import BusinessModal from "./components/BusinessModal"
 import BallsLoader from "../../components/Icons/BallsLoader.svg"
+import { useQuery } from "@tanstack/react-query"
 
 function Business() {
   const {
@@ -10,9 +11,6 @@ function Business() {
     useModalHook: { setBusinessModal },
     businessHooks: { retrieveBusinessData, businessData }
   } = useAppContext()
-
-  const [loading, setLoading] = useState(true)
-  const alreadyRetrieved = useRef(false)
 
   const {
     business_name,
@@ -24,21 +22,15 @@ function Business() {
 
   const { address1, country, region, city } = business_geodata || {}
 
-  useEffect(() => {
-    (async () => {
-      if (!alreadyRetrieved.current) {
-        alreadyRetrieved.current = true
-        try {
-          setLoading(true)
-          await retrieveBusinessData()
-        } catch (error) {
-          console.error("Error retrieving business data:", error)
-        } finally {
-          setLoading(false)
-        }
-      }
-    })()
-  }, [])
+  const {isLoading} = useQuery({
+    queryKey:["business-data"],
+    queryFn: retrieveBusinessData,
+    refetchOnWindowFocus:false,
+    refetchOnMount:false,
+    staleTime: 60 * 60 * 1000,
+    retry:false,
+    enabled: !businessData || businessData === null
+  })
 
   const placeholderImages = [
     "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
@@ -53,7 +45,7 @@ function Business() {
   }, [])
 
 
-  if (loading) {
+  if (isLoading) {
     return (
       <Flex justify="center" align="center" w={"100%"} h="100vh">
         <picture

@@ -30,6 +30,7 @@ interface BusinessGeodata{
 }
 
 export interface BusinessData{
+  business_id: string;
   business_name: string;
   business_description: string;
   business_geodata: BusinessGeodata;
