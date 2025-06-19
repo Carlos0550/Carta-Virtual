@@ -151,4 +151,5 @@
     border: 1px solid #FF0000;
     overflow: hidden;
     cursor: pointer;
+    z-index: 10;
 }
