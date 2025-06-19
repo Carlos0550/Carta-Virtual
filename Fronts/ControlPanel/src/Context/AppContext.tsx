@@ -1,10 +1,14 @@
-import { createContext, useContext, useMemo, useState } from "react";
+import { createContext, useContext, useMemo } from "react";
 import WidthUtil from "./ContextUtils/WidthUtil";
 import type { AppContextTypes } from "./ContextTypes";
 import useAuth from "./ContextHooks/useAuth";
 import useModal from "./ContextHooks/useModal";
 import useBusiness from "./ContextHooks/useBusiness";
+import useCategories from "./ContextHooks/useCategories";
+import { useQuery } from "@tanstack/react-query";
+import "./css/context.css"
 
+import BallsIcon from "../components/Icons/BallsLoader.svg"
 const AppContext = createContext<AppContextTypes | null>(null);
 
 export const useAppContext = () => {
@@ -22,17 +26,57 @@ export const AppContextProvider = ({ children }: any) => {
     const useModalHook = useModal()
 
     const businessHooks = useBusiness()
+
+    const categoriesHooks = useCategories({business_id: businessHooks.businessData?.business_id || ""})
     
     const ContextValues = useMemo(() => ({
         width, 
         useAuthHook,
         useModalHook, 
-        businessHooks
+        businessHooks,
+        categoriesHooks
     }),[
         width, 
         useAuthHook,
         useModalHook, 
-        businessHooks
+        businessHooks,
+        categoriesHooks
     ])
+    
+    
+    const { isLoading: loadingApp } = useQuery({
+        queryKey: ['initApp'],
+        queryFn: async () => {
+
+            if (useAuthHook.loginData.isAuth) {
+               const business_id = await businessHooks.retrieveBusinessData()
+               console.log(business_id)
+               if(business_id) await categoriesHooks.retrieveCategories(business_id as string)
+            }
+            await new Promise(resolve => setTimeout(resolve, 1000))
+            return true
+        },
+        enabled: useAuthHook.loginData.isAuth , 
+        staleTime: Infinity,
+        gcTime: Infinity,
+        retry: 0, 
+        refetchOnWindowFocus: false, 
+        refetchOnReconnect:true
+    })
+    
+    if (loadingApp) {
+        return <div className="loading-app">
+                <div className="dot-spinner">
+                    <div className="dot-spinner__dot"></div>
+                    <div className="dot-spinner__dot"></div>
+                    <div className="dot-spinner__dot"></div>
+                    <div className="dot-spinner__dot"></div>
+                    <div className="dot-spinner__dot"></div>
+                    <div className="dot-spinner__dot"></div>
+                    <div className="dot-spinner__dot"></div>
+                </div>
+        </div>
+    }
+    
     return <AppContext.Provider value={ContextValues}>{children}</AppContext.Provider>;
 };
