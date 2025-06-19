@@ -9,4 +9,5 @@ export const endpoints = {
     auth: new URL(`${base_api.url}/auth`),
     geodata: new URL(`${base_api.url}/geodata`),
     business: new URL(`${base_api.url}/business`),
+    categories: new URL(`${base_api.url}/categories`),
 }
