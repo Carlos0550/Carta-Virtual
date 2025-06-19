@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { BusinessData, BusinessFormData } from '../HookTypes/BusinessTypes'
 import { endpoints } from '../ContextUtils/Apis'
 import useSessionValidator from '../ContextUtils/useSessionValidator'
@@ -73,7 +73,7 @@ function useBusiness() {
         }
     }, [ensureSessionIsValid, setBusinessData])
 
-    const retrieveBusinessData = useCallback(async (): Promise<boolean> => {
+    const retrieveBusinessData = useCallback(async (): Promise<boolean | string> => {
         await ensureSessionIsValid()
         const access_token = localStorage.getItem('access_token')
         const url = new URL(`${endpoints.business}/retrieve-data`)
@@ -84,11 +84,16 @@ function useBusiness() {
                     "Authorization": `Bearer ${access_token}`,
                 },
             });
+
+            if(response.status === 404){
+                setBusinessData(null)
+                return true
+            }
             const respData: retrieveBusinessResp = await response.json();
-            console.log(respData)
+
             if (!response.ok) throw new Error(respData.msg || 'Error al recuperar los datos del negocio')
             setBusinessData(respData.business)
-            return true
+            return respData.business.business_id
         } catch (error) {
             console.log(error)
             showNotification({
@@ -102,6 +107,10 @@ function useBusiness() {
         }
             
     },[ensureSessionIsValid]) 
+
+    useEffect(()=>{
+        console.log(businessData)
+    },[businessData])
 
     return useMemo(() => ({
         businessData,
