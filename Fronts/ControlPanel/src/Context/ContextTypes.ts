@@ -2,7 +2,7 @@ import type React from "react"
 import type { LoginData, UserInfo } from "./HookTypes/AuthTypes"
 import type { BusinessModal } from "./HookTypes/ModalTypes"
 import type { BusinessData, BusinessFormData } from "./HookTypes/BusinessTypes"
-import type { CategoriesModal } from "./HookTypes/Categories"
+import type { CategoriesForm, CategoriesModal, Category } from "./HookTypes/Categories"
 import type { SetStateAction } from "react"
 
 interface AuthHooks{
@@ -29,12 +29,19 @@ interface BusinessHooks{
     setBusinessData: React.Dispatch<React.SetStateAction<BusinessData | null>>,
     clearBusinessData: () => void,
     saveBusiness: (formData: BusinessFormData, fileData: File) => Promise<boolean>,
-    retrieveBusinessData: () => Promise<boolean>
+    retrieveBusinessData: () => Promise<boolean | string>
+}
+
+interface CategoriesHooks{
+    categories: Category[],
+    saveCategory: (formData: CategoriesForm, fileData: File) => Promise<boolean>
+    retrieveCategories: (bsd_id: string) => Promise<boolean>
 }
 
 export interface AppContextTypes{
     useAuthHook: AuthHooks,
     width: number
     useModalHook: ModalHooks,
-    businessHooks: BusinessHooks
+    businessHooks: BusinessHooks,
+    categoriesHooks: CategoriesHooks
 }
