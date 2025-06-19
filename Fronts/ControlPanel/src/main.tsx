@@ -14,14 +14,14 @@ const queryClient = new QueryClient();
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <BrowserRouter>
-      <AppContextProvider>
-        <MantineProvider>
-          <Notifications />
-          <QueryClientProvider client={queryClient}>
+      <QueryClientProvider client={queryClient}>
+        <AppContextProvider>
+          <MantineProvider>
+            <Notifications />
             <App />
-          </QueryClientProvider>
-        </MantineProvider>
-      </AppContextProvider>
+          </MantineProvider>
+        </AppContextProvider>
+      </QueryClientProvider>
     </BrowserRouter>
   </StrictMode>,
 )
