@@ -85,9 +85,6 @@ function useCategories({business_id}: Props) {
     }
    },[ensureSessionIsValid])
 
-   useEffect(()=>{
-    console.log(categories)
-   },[categories])
 
   return useMemo(() => ({
     saveCategory, categories, retrieveCategories
