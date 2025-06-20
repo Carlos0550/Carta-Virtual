@@ -17,7 +17,7 @@ def DeleteFromCloudinary(image_url:str)-> str:
 
         public_id_with_ext = path.split("/")[-2:]
         public_id = "/".join(public_id_with_ext).rsplit(".",1)[0]
-        print("Public ID:", public_id)
+
         delete_result = cloudinary.uploader.destroy(public_id)
         print("Resultado Cloudinary:", delete_result)
         return delete_result.get("result", "error")
