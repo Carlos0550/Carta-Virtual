@@ -24,7 +24,7 @@ interface BusinessGeodata{
     label: string;
   },
   city:{
-    name: string;
+    code: string;
     label: string;
   }
 }
