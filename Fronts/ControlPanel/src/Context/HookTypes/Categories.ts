@@ -1,6 +1,7 @@
 export interface CategoriesModal{
     opened: boolean,
-    formType?: "edit" | "create"
+    formType?: "edit" | "create",
+    editCategoryData?: Category | null
 }
 
 export interface CategoriesForm{

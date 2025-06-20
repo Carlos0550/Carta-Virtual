@@ -159,3 +159,106 @@ def get_categories(business_id:str):
             "msg": "Error al obtener categorías",
             "error": str(e)
         }), 500
+
+
+def update_category(data: CategoryPayload, category_id: str, business_id: str):
+    """Actualiza una categoría existente"""
+    try:
+        category = Categories.query.filter_by(category_name=category_id, business_category_id=business_id).first()
+        if not category:
+            return jsonify({
+                "msg": "Categoría no encontrada",
+                "error": "CATEGORY_NOT_FOUND"
+            }), 404
+
+        if category.category_name != data['category_name']:
+            existing = Categories.query.filter_by(category_name=data['category_name'], business_category_id=business_id).first()
+            if existing:
+                return jsonify({
+                    "msg": "Ya existe una categoría con ese nombre",
+                    "error": "DUPLICATE_CATEGORY"
+                }), 409
+
+        image_url = category.category_image
+        if data.get("category_image"):
+            new_url = UploadImageToCloudinary(data["category_image"], folder="categories")
+            if not new_url:
+                return jsonify({
+                    "msg": "Error al subir la nueva imagen",
+                    "error": "IMAGE_UPLOAD_ERROR"
+                }), 500
+            delete_result = DeleteFromCloudinary(image_url)
+            if delete_result != "ok":
+                DeleteFromCloudinary(new_url)
+                return jsonify({
+                    "msg": "No se pudo eliminar la imagen anterior",
+                    "error": "IMAGE_DELETE_ERROR"
+                }), 500
+            image_url = new_url
+
+        category.category_name = data['category_name']
+        category.category_description = data.get('category_description', None)
+        category.category_image = image_url
+
+        db.session.commit()
+
+        return jsonify({
+            "msg": "Categoría actualizada exitosamente",
+            "category": category.to_dict()
+        }), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logger.error(f"Error al actualizar categoría: {str(e)}")
+        return jsonify({
+            "msg": "Error interno del servidor. Inténtalo de nuevo más tarde.",
+            "error": "DATABASE_ERROR"
+        }), 500
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error inesperado al actualizar categoría: {str(e)}")
+        return jsonify({
+            "msg": "Error inesperado. Contacta al soporte técnico.",
+            "error": "UNEXPECTED_ERROR"
+        }), 500
+
+
+def delete_category(category_id: str, business_id: str):
+    """Elimina una categoría"""
+    try:
+        category = Categories.query.filter_by(category_name=category_id, business_category_id=business_id).first()
+        if not category:
+            return jsonify({
+                "msg": "Categoría no encontrada",
+                "error": "CATEGORY_NOT_FOUND"
+            }), 404
+
+        image_url = category.category_image
+
+        db.session.delete(category)
+        db.session.commit()
+
+        if image_url:
+            try:
+                DeleteFromCloudinary(image_url)
+            except Exception as e:
+                logger.error(f"Error al eliminar imagen de Cloudinary: {str(e)}")
+
+        return jsonify({
+            "msg": "Categoría eliminada exitosamente"
+        }), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logger.error(f"Error de base de datos al eliminar categoría: {str(e)}")
+        return jsonify({
+            "msg": "Error interno del servidor. Inténtalo de nuevo más tarde.",
+            "error": "DATABASE_ERROR"
+        }), 500
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error inesperado al eliminar categoría: {str(e)}")
+        return jsonify({
+            "msg": "Error inesperado. Contacta al soporte técnico.",
+            "error": "UNEXPECTED_ERROR"
+        }), 500

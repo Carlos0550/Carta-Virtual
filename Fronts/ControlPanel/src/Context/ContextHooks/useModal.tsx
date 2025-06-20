@@ -32,7 +32,8 @@ function useModal() {
   })
   const [categoriesModal, setCategoriesModal] = useState<CategoriesModal>({
     formType: "create",
-    opened: false
+    opened: false,
+    editCategoryData: null
   })
 
   const closeBusinessModal = () => {
@@ -68,7 +69,8 @@ function useModal() {
   const closeCategoriesModal = () => {
     setCategoriesModal({
       formType: "create",
-      opened: false
+      opened: false,
+      editCategoryData: null
     })
   }
   return useMemo(() => ({

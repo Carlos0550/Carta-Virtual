@@ -8,10 +8,14 @@ function CategoriesCardList() {
   const {
     categoriesHooks:{
       categories,
-      retrieveCategories
+      retrieveCategories,
+      deleteCategory
     },
-    businessHooks:{ 
+    businessHooks:{
       businessData
+    },
+    useModalHook:{
+      setCategoriesModal
     }
   } = useAppContext()
   
@@ -82,6 +86,7 @@ function CategoriesCardList() {
               variant="light"
               color="blue"
               leftSection={<FaEdit size={16} />}
+              onClick={() => setCategoriesModal({opened: true, formType: 'edit', editCategoryData: cat})}
             >
               Editar
             </Button>
@@ -90,6 +95,7 @@ function CategoriesCardList() {
               variant="light"
               color="red"
               leftSection={<FaTrash size={16} />}
+              onClick={() => deleteCategory(cat.category_id || cat.category_name)}
             >
               Eliminar
             </Button>
