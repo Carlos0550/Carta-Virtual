@@ -14,6 +14,10 @@ type retrieveBusinessResp = {
     business: BusinessData
 }
 
+type UpdateBusinessResponde = {
+    msg: string,
+    business: BusinessData
+}
 function useBusiness() {
     const { ensureSessionIsValid } = useSessionValidator()
     const [businessData, setBusinessData] = useState<BusinessData | null>(null)
@@ -108,22 +112,70 @@ function useBusiness() {
             
     },[ensureSessionIsValid]) 
 
-    useEffect(()=>{
-        console.log(businessData)
-    },[businessData])
+    const updateBusinessInfo = useCallback(async(formData: BusinessFormData, fileData: File): Promise<boolean> => {
+        await ensureSessionIsValid()
+        const at = localStorage.getItem("access_token")
+        const url = new URL(`${endpoints.business}/update`)
+        url.searchParams.append("business_id", businessData?.business_id || "")
+        const form = new FormData()
+
+        Object.entries(formData).forEach(([keys, value]) => {
+            if(value !== undefined && value !== null){
+                form.append(keys, value)
+            }
+        })
+
+        form.append("business_image", fileData)
+
+        try {
+            const response = await fetch(url,{
+                method: "PUT",
+                headers: {
+                    "Authorization": `Bearer ${at}`
+                },
+                body: form
+            });
+
+            const data: UpdateBusinessResponde = await response.json()
+            if(!response.ok) throw new Error(data.msg || "Error desconocido.")
+
+            showNotification({
+                title: "Actualización exitosa.",
+                message: "",
+                autoClose: 2500,
+                position: "top-right",
+                color: "green"
+            })
+            setBusinessData(data.business)
+            return true
+        } catch (error) {
+            console.log(error)
+            showNotification({
+                title: "Error al actualizar la información.",
+                message: (error as Error).message,
+                autoClose: 5000,
+                position: "top-right",
+                color: "red"
+            })
+
+            return false
+        }
+    },[businessData?.business_id, ensureSessionIsValid])
 
     return useMemo(() => ({
         businessData,
         setBusinessData,
         clearBusinessData,
         saveBusiness,
-        retrieveBusinessData
+        retrieveBusinessData,
+        updateBusinessInfo
     }), [
         businessData,
         setBusinessData,
         clearBusinessData,
         saveBusiness,
-        retrieveBusinessData
+        retrieveBusinessData,
+        updateBusinessInfo
     ])
 }
 
