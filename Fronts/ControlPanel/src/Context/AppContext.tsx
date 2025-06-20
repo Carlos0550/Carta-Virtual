@@ -49,11 +49,8 @@ export const AppContextProvider = ({ children }: any) => {
         queryFn: async () => {
 
             if (useAuthHook.loginData.isAuth) {
-               const business_id = await businessHooks.retrieveBusinessData()
-               console.log(business_id)
-               if(business_id) await categoriesHooks.retrieveCategories(business_id as string)
+                await businessHooks.retrieveBusinessData()
             }
-            await new Promise(resolve => setTimeout(resolve, 1000))
             return true
         },
         enabled: useAuthHook.loginData.isAuth , 
