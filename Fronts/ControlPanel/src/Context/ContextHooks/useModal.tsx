@@ -5,7 +5,30 @@ import { type CategoriesModal } from '../HookTypes/Categories'
 function useModal() {
   const [businessModal, setBusinessModal] = useState<BusinessModal>({
     formType: "create",
-    opened: false
+    opened: false,
+    editBusinessData: {
+      business_banner: "",
+      business_id: "",
+      business_description: "",
+      business_email: "",
+      business_geodata: {
+        address1: "",
+        city: {
+          label: "",
+          code: ""
+        },
+        country: {
+          label: "",
+          code: ""
+        },
+        region: {
+          label: "",
+          code: ""
+        }
+      },
+      business_name: "",
+      business_phone: ""
+    }
   })
   const [categoriesModal, setCategoriesModal] = useState<CategoriesModal>({
     formType: "create",
@@ -15,7 +38,30 @@ function useModal() {
   const closeBusinessModal = () => {
     setBusinessModal({
       formType: "create",
-      opened: false
+      opened: false,
+      editBusinessData: {
+        business_banner: "",
+        business_id: "",
+        business_description: "",
+        business_email: "",
+        business_geodata: {
+          address1: "",
+          city: {
+            label: "",
+            code: ""
+          },
+          country: {
+            label: "",
+            code: ""
+          },
+          region: {
+            label: "",
+            code: ""
+          }
+        },
+        business_name: "",
+        business_phone: ""
+      }
     })
   }
 
