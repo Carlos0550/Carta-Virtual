@@ -37,7 +37,8 @@ interface CategoriesHooks{
     categories: Category[],
     saveCategory: (formData: CategoriesForm, fileData: File) => Promise<boolean>
     retrieveCategories: (bsd_id: string) => Promise<boolean>,
-    
+    updateCategory: (formData: CategoriesForm, fileData: File, category_id: string) => Promise<boolean>,
+    deleteCategory: (category_id: string) => Promise<boolean>
 }
 
 export interface AppContextTypes{

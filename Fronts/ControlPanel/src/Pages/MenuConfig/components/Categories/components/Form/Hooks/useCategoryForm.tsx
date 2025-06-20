@@ -1,5 +1,5 @@
 // useCategoryForm.tsx
-import { useState, type ChangeEvent } from "react";
+import { useState, useEffect, type ChangeEvent } from "react";
 import useFileUploader from "./useFileUploader";
 import type { CategoriesForm } from "../../../../../../../Context/HookTypes/Categories";
 import { useAppContext } from "../../../../../../../Context/AppContext";
@@ -66,14 +66,15 @@ async function searchPexelsPhotos(searchTerm: string): Promise<any[]> {
 
 function useCategoryForm() {
   const {
-    useModalHook: { closeCategoriesModal },
-    categoriesHooks: { saveCategory }
+    useModalHook: { closeCategoriesModal, categoriesModal },
+    categoriesHooks: { saveCategory, updateCategory }
   } = useAppContext();
 
   const [formData, setFormData] = useState<CategoriesForm>(initialFormData);
   const [formErrors, setFormErrors] = useState<CategoriesErrors>({});
   const [formLoading, setFormLoading] = useState(false);
   const [formSuccess, setFormSuccess] = useState(false);
+  const [fetchingImageToEdit, setFetchingImageToEdit] = useState(false);
 
   const [usePexelsImage, setUsePexelsImage] = useState(false);
   const [searchingPexels, setSearchingPexels] = useState(false);
@@ -82,6 +83,32 @@ function useCategoryForm() {
   const [pexelsSearchTerm, setPexelsSearchTerm] = useState("");
 
   const { fileData, setFileData, handleUpload: originalUpload, processingFile } = useFileUploader();
+
+  useEffect(() => {
+    if(categoriesModal?.formType === "edit" && categoriesModal.editCategoryData){
+      const { category_name, category_description, category_image, category_id } = categoriesModal.editCategoryData
+      setFormData({
+        category_name,
+        category_description: category_description || ""
+      })
+      const download_image = async () => {
+        try {
+          setFetchingImageToEdit(true)
+          const response = await fetch(category_image)
+          const blob = await response.blob()
+          const file = new File([blob], `${category_id || 'image'}.jpg`, { type: blob.type })
+          setFileData(file)
+        } catch (error) {
+          console.error('Error al descargar la imagen:', error)
+        } finally {
+          setFetchingImageToEdit(false)
+        }
+      }
+      if(category_image){
+        download_image()
+      }
+    }
+  },[categoriesModal])
 
   // al subir manual, cancelar Pexels
   const handleUpload = (e: ChangeEvent<HTMLInputElement>) => {
@@ -197,7 +224,9 @@ function useCategoryForm() {
     if (!handleValidateFields()) return;
 
     setFormLoading(true);
-    const result = await saveCategory(formData, fileData!);
+    const result = categoriesModal?.formType === "create"
+      ? await saveCategory(formData, fileData!)
+      : await updateCategory(formData, fileData!, categoriesModal?.editCategoryData?.category_id || categoriesModal?.editCategoryData?.category_name || "");
     setFormLoading(false);
 
     if (result) {
@@ -232,7 +261,8 @@ function useCategoryForm() {
     retryPexelsSearch,
     pexelsSearchTerm,
     setPexelsSearchTerm,
-    clearImage
+    clearImage,
+    fetchingImageToEdit
   };
 }
 

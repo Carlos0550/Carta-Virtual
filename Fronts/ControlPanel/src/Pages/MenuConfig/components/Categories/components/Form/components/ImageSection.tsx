@@ -7,6 +7,7 @@ interface ImageSectionProps {
   fileData: File | null;
   processingFile: boolean;
   searchingPexels: boolean;
+  fetchingImage?: boolean;
   formData: { category_name: string };
   usePexelsImage: boolean;
   onFileUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
@@ -21,6 +22,7 @@ function ImageSection({
   fileData,
   processingFile,
   searchingPexels,
+  fetchingImage = false,
   formData,
   onFileUpload,
   onUsePexelsImage,
@@ -32,7 +34,7 @@ function ImageSection({
   const createPreviewUrl = (file: File | Blob) => URL.createObjectURL(file);
 
   if (!fileData) {
-    if (processingFile || searchingPexels) {
+    if (processingFile || searchingPexels || fetchingImage) {
       return (
         <div className="processing-file-container">
           <div className="loader" />

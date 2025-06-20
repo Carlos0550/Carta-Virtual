@@ -4,6 +4,7 @@ import FormFields from './components/FormFields';
 import ImageSection from './components/ImageSection';
 import PexelsGallery from './components/PexelsGallery';
 import useCategoryForm from './Hooks/useCategoryForm';
+import { useAppContext } from '../../../../Context/AppContext';
 
 function CategoryForm() {
   const {
@@ -25,14 +26,16 @@ function CategoryForm() {
     retryPexelsSearch,
     pexelsSearchTerm,
     setPexelsSearchTerm,
-    clearImage
+    clearImage,
+    fetchingImageToEdit
   } = useCategoryForm();
+  const { useModalHook:{ categoriesModal } } = useAppContext()
 
   if (formSuccess) {
     return (
       <Paper withBorder p="md" radius="md" style={{ maxWidth: 600, margin: '0 auto' }}>
         <Flex direction="column" align="center" justify="center" gap="md">
-          <Text size="lg" fw={500}>🎉 Categoría guardada exitosamente.</Text>
+          <Text size="lg" fw={500}>🎉 {categoriesModal?.formType === 'create' ? 'Categoría guardada exitosamente.' : 'Categoría actualizada exitosamente.'}</Text>
         </Flex>
       </Paper>
     );
@@ -51,6 +54,7 @@ function CategoryForm() {
           fileData={fileData}
           processingFile={processingFile}
           searchingPexels={searchingPexels}
+          fetchingImage={fetchingImageToEdit}
           formData={formData}
           usePexelsImage={usePexelsImage}
           onFileUpload={handleUpload}
@@ -72,11 +76,11 @@ function CategoryForm() {
         <Button
           type="submit"
           loading={formLoading}
-          disabled={formLoading || processingFile || searchingPexels}
+          disabled={formLoading || processingFile || searchingPexels || fetchingImageToEdit}
           fullWidth
           mt="md"
         >
-          Guardar Categoría
+          {categoriesModal?.formType === 'create' ? 'Guardar Categoría' : 'Actualizar Categoría'}
         </Button>
       </Flex>
     </form>

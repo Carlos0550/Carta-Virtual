@@ -63,6 +63,90 @@ function useCategories({business_id}: Props) {
         }
     },[business_id, setCategories, ensureSessionIsValid])
 
+    const updateCategory = useCallback(async(formData: CategoriesForm, fileData: File, category_id: string) => {
+        await ensureSessionIsValid()
+        const url = new URL(`${endpoints.categories}/update`)
+        url.searchParams.append("business_id", business_id)
+        url.searchParams.append("category_id", category_id)
+
+        const form = new FormData()
+        Object.entries(formData).forEach(([key, value]) => {
+            if(value !== undefined && value !== null){
+                form.append(key, value)
+            }
+        })
+        form.append("category_image", fileData)
+
+        try {
+            const response = await fetch(url, {
+                method: "PUT",
+                body: form
+            })
+            const data = await response.json()
+            if(!response.ok) throw new Error(data.msg || "Error al actualizar la categoría")
+
+            showNotification({
+                title: "Categoría actualizada",
+                message: data.msg,
+                color: "green",
+                autoClose: 3000,
+                position: "top-right",
+                withCloseButton: true,
+                icon: <TbCheck size={18}/>
+            })
+
+            setCategories(prev => prev.map(cat => (cat.category_id === category_id || cat.category_name === category_id ? data.category : cat)))
+            return true
+        } catch (error) {
+            console.log(error)
+            showNotification({
+                title: "Error",
+                message: (error as Error).message || "Error al actualizar la categoría",
+                color: "red",
+                autoClose: 3000,
+                position: "top-right",
+                withCloseButton: true,
+                icon: <TbAlertCircle size={18}/>
+            })
+            return false
+        }
+    },[business_id, ensureSessionIsValid, setCategories])
+
+    const deleteCategoryFn = useCallback(async(category_id: string) => {
+        await ensureSessionIsValid()
+        const url = new URL(`${endpoints.categories}/delete`)
+        url.searchParams.append("business_id", business_id)
+        url.searchParams.append("category_id", category_id)
+        try {
+            const response = await fetch(url, { method: "DELETE" })
+            const data = await response.json()
+            if(!response.ok) throw new Error(data.msg || "Error al eliminar la categoría")
+            showNotification({
+                title: "Categoría eliminada",
+                message: data.msg,
+                color: "green",
+                autoClose: 3000,
+                position: "top-right",
+                withCloseButton: true,
+                icon: <TbCheck size={18}/>
+            })
+            setCategories(prev => prev.filter(cat => !(cat.category_id === category_id || cat.category_name === category_id)))
+            return true
+        } catch (error) {
+            console.log(error)
+            showNotification({
+                title: "Error",
+                message: (error as Error).message || "Error al eliminar la categoría",
+                color: "red",
+                autoClose: 3000,
+                position: "top-right",
+                withCloseButton: true,
+                icon: <TbAlertCircle size={18}/>
+            })
+            return false
+        }
+    },[business_id, ensureSessionIsValid, setCategories])
+
 
    const retrieveCategories = useCallback(async(bsd_id: string) => {
     await ensureSessionIsValid()
@@ -87,8 +171,18 @@ function useCategories({business_id}: Props) {
 
 
   return useMemo(() => ({
-    saveCategory, categories, retrieveCategories
-  }),[saveCategory, categories, retrieveCategories]) 
+    saveCategory,
+    updateCategory,
+    deleteCategory: deleteCategoryFn,
+    categories,
+    retrieveCategories
+  }),[
+    saveCategory,
+    updateCategory,
+    deleteCategoryFn,
+    categories,
+    retrieveCategories
+  ])
 }
 
 export default useCategories
