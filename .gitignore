@@ -38,3 +38,4 @@ server/app/services/Users/__pycache__/users_services.cpython-313.pyc
 server/app/services/Users/utils/__pycache__/UserUtils.cpython-313.pyc
 server/app/utils/__pycache__/CloudinaryUtils.cpython-313.pyc
 server/app/validations/__pycache__/CategoriesTypes.cpython-313.pyc
+placeholder_images.py
