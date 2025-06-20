@@ -26,12 +26,10 @@ function Business() {
     queryKey:["business-data"],
     queryFn: retrieveBusinessData,
     refetchOnWindowFocus:false,
-    refetchOnMount:false,
-    staleTime: 60 * 60 * 1000,
-    retry:false,
+    refetchOnMount:true,    
     enabled: !businessData || businessData === null
   })
-
+  
   const placeholderImages = [
     "https://images.unsplash.com/photo-1556905055-8f358a7a47b2?auto=format&fit=crop&w=800&q=80",
     "https://images.unsplash.com/photo-1600891964599-f61ba0e24092?auto=format&fit=crop&w=800&q=80",
@@ -43,6 +41,38 @@ function Business() {
   const randomImage = useMemo(() => {
     return placeholderImages[Math.floor(Math.random() * placeholderImages.length)]
   }, [])
+
+  const handleEditBusiness = () => {
+    setBusinessModal({
+      opened: true,
+      formType: "edit",
+      editBusinessData: {
+        business_banner: businessData?.business_banner!,
+        business_id: businessData?.business_id!,
+        business_description: business_description || "",
+        business_email: business_email!,
+        business_geodata: {
+          address1: address1!,
+          city: {
+            label: city?.label!,
+            code: city?.code!
+          },
+          country: {
+            label: country?.label!,
+            code: country?.code!
+          },
+          region: {
+            label: region?.label!,
+            code: region?.code!
+          }
+        },
+        business_name: business_name!,
+        business_phone: business_phone!
+      }
+    })
+
+   
+  }
 
 
   if (isLoading) {
@@ -141,7 +171,7 @@ function Business() {
               </Group>
 
               <Flex justify="end" mt="md">
-                <Button variant="light" onClick={() => setBusinessModal({ opened: true, formType: "edit" })}>
+                <Button variant="light" onClick={() => handleEditBusiness()}>
                   ✏️ Editar información
                 </Button>
               </Flex>
