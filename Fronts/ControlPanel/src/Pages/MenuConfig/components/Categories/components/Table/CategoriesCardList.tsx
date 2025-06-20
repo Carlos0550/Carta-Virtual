@@ -1,19 +1,59 @@
-import React, { useState } from 'react';
 import { Box, Card, Image, Text, Button, Group, Flex } from '@mantine/core';
 import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useAppContext } from '../../../../../../Context/AppContext';
-
+import { useQuery } from '@tanstack/react-query';
+import BallsLoader from "@/components/Icons/BallsLoader.svg"
 function CategoriesCardList() {
 
   const {
     categoriesHooks:{
-      categories
+      categories,
+      retrieveCategories
+    },
+    businessHooks:{ 
+      businessData
     }
   } = useAppContext()
- 
+  
+
+  const {isLoading} = useQuery({
+    queryKey:["retrieveIfEnough"],
+    queryFn: async () => {
+      await new Promise(resolve => setTimeout(resolve, 2000));
+      await retrieveCategories(businessData?.business_id!)
+    },
+    enabled: !categories || categories.length === 0 ,
+    retry: true,
+    retryDelay: 5000
+  })
+
+  if(isLoading){
+    return (
+      <Flex justify="center" align="center" w={"100%"} h="30vh">
+        <picture
+          style={{
+            width: "45px",
+            height: "45px",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center"
+          }}
+        >
+          <img
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "contain",
+              display: "block"
+            }}
+            src={BallsLoader} alt="Cargando" />
+        </picture>
+      </Flex>
+    )
+  }
   return (
     <Flex wrap="wrap" gap="md" pt={10} justify={categories && categories.length > 1 ? "center" : "flex-start"}>
-      { categories.length > 0 && categories.map((cat) => (
+      {categories.length > 0 && categories.map((cat) => (
         <Card 
             key={cat.category_id} 
             shadow="sm" 
