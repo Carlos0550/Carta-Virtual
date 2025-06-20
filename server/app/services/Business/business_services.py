@@ -1,3 +1,4 @@
+from sqlalchemy.sql.coercions import expect
 from ...models import Business
 from ...connections.pg_database import db
 from ...validations.BusinessType import BusinessPayload
@@ -31,24 +32,6 @@ def create_business(data: BusinessPayload, user_id: str) -> Union[Dict[str, str]
         BusinessServiceError: Si hay un error en el servicio
     """
     
-    # Validar datos de entrada
-    if not data.get('business_name'):
-        logger.error("Intento de crear negocio sin nombre")
-        return jsonify({"msg": "El nombre del negocio es obligatorio"}), 400
-    
-    if not user_id:
-        logger.error("Intento de crear negocio sin user_id")
-        return jsonify({"msg": "ID de usuario es obligatorio"}), 400
-    
-    if not data.get('business_phone'):
-        logger.error("Intento de crear negocio sin teléfono")
-        return jsonify({"msg": "El teléfono del negocio es obligatorio"}), 400
-    
-    if not data.get('business_email'):
-        logger.error("Intento de crear negocio sin email")
-        return jsonify({"msg": "El email del negocio es obligatorio"}), 400
-    
-    # Verificar si ya existe un negocio con el mismo nombre
     try:
         sameBusiness = Business.query.filter_by(business_name=data['business_name']).first()
         if sameBusiness:
@@ -64,7 +47,6 @@ def create_business(data: BusinessPayload, user_id: str) -> Union[Dict[str, str]
             "error": "DATABASE_ERROR"
         }), 500
     
-    # Obtener datos geográficos
     try:
         logger.info(f"Obteniendo datos geográficos para: {data.get('city', 'N/A')}")
         geo_response = getGeoData(data['countryCode'], int(data['regionCode']), data['city'])
@@ -79,7 +61,7 @@ def create_business(data: BusinessPayload, user_id: str) -> Union[Dict[str, str]
             "error": "GEO_ERROR"
         }), 500
     
-    # Manejo de subida de imagen
+
     image_url = ""
     try:
         if data.get("business_image"):
@@ -93,7 +75,6 @@ def create_business(data: BusinessPayload, user_id: str) -> Union[Dict[str, str]
             "error": "IMAGE_UPLOAD_ERROR"
         }), 500
     
-    # Crear nuevo negocio
     try:
         newBusiness = Business(
             business_name=data['business_name'],
@@ -246,3 +227,83 @@ def get_business_by_user(user_id: str):
         }), 500
 
     
+def update_business_info(data: BusinessPayload, user_id: str) -> Union[Dict[str, str], tuple[Response, int]]:
+    try:
+        business = Business.query.filter_by(business_id=data['business_id'], business_user_id=user_id).first()
+        if not business:
+            return jsonify({
+                "msg": "No tienes permisos para editar este negocio o no existe.",
+                "error": "BUSINESS_NOT_FOUND"
+            }), 404
+
+        if business.business_name != data['business_name']:
+            existing = Business.query.filter_by(business_name=data['business_name']).first()
+            if existing:
+                return jsonify({
+                    "msg": "Ya existe un negocio con ese nombre.",
+                    "error": "DUPLICATE_BUSINESS_NAME"
+                }), 409
+
+        image_url = business.business_banner
+        new_url = UploadImageToCloudinary(data["business_image"], folder="businesses")
+        if not new_url:
+            return jsonify({
+                "msg": "Error al subir la nueva imagen. La información no fue modificada.",
+                "error": "IMAGE_UPLOAD_ERROR"
+            }), 500
+        delete_result = DeleteFromCloudinary(image_url)
+        if delete_result != "ok":
+            DeleteFromCloudinary(new_url)
+            return jsonify({
+                "msg": "No se pudo eliminar la imagen anterior.",
+                "error": "IMAGE_DELETE_ERROR"
+            }), 500
+                
+        image_url = new_url
+        geo_response = getGeoData(data['countryCode'], int(data['regionCode']), data['city'])
+
+        if isinstance(geo_response, tuple):  
+            logger.error("Error al obtener datos geográficos")
+            return geo_response
+        business.business_name = data['business_name']
+        business.business_geodata = {
+            "address1": data['business_address1'],
+            "country": {
+                    "code": data['countryCode'],
+                    "label": geo_response['country']
+                },
+                "region": {
+                    "code": data['regionCode'],
+                    "label": geo_response['region']
+                },
+                "city": {
+                    "code": data['city'],
+                    "label": geo_response['city']
+                }
+        }
+        business.business_phone = data['business_phone']
+        business.business_email = data['business_email']
+        business.business_description = data.get('business_description', None)
+        business.business_banner = image_url
+
+        db.session.commit()
+
+        return jsonify({
+            "msg": "Negocio actualizado exitosamente",
+            "business": business.serialize()
+        }), 200
+
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        logger.error(f"Error al actualizar negocio: {str(e)}")
+        return jsonify({
+            "msg": "Error interno del servidor. Inténtalo de nuevo más tarde.",
+            "error": "DATABASE_ERROR"
+        }), 500
+    except Exception as e:
+        db.session.rollback()
+        logger.error(f"Error inesperado al actualizar negocio: {str(e)}")
+        return jsonify({
+            "msg": "Error inesperado. Contacta al soporte técnico.",
+            "error": "UNEXPECTED_ERROR"
+        }), 500

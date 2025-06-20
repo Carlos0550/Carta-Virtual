@@ -11,3 +11,4 @@ class BusinessPayload(TypedDict):
     business_phone: str
     business_email: str
     business_image: Optional[FileStorage]
+    business_id: Optional[str]
