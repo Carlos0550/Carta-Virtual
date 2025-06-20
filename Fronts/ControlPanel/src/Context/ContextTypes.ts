@@ -29,13 +29,15 @@ interface BusinessHooks{
     setBusinessData: React.Dispatch<React.SetStateAction<BusinessData | null>>,
     clearBusinessData: () => void,
     saveBusiness: (formData: BusinessFormData, fileData: File) => Promise<boolean>,
-    retrieveBusinessData: () => Promise<boolean | string>
+    retrieveBusinessData: () => Promise<boolean | string>,
+    updateBusinessInfo: (formData: BusinessFormData, fileData: File) => Promise<boolean>
 }
 
 interface CategoriesHooks{
     categories: Category[],
     saveCategory: (formData: CategoriesForm, fileData: File) => Promise<boolean>
-    retrieveCategories: (bsd_id: string) => Promise<boolean>
+    retrieveCategories: (bsd_id: string) => Promise<boolean>,
+    
 }
 
 export interface AppContextTypes{
