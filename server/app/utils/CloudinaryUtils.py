@@ -19,7 +19,7 @@ def DeleteFromCloudinary(image_url:str)-> str:
         public_id = "/".join(public_id_with_ext).rsplit(".",1)[0]
 
         delete_result = cloudinary.uploader.destroy(public_id)
-        print("Resultado Cloudinary:", delete_result)
+        
         return delete_result.get("result", "error")
     except Exception as e:
         print("Error al eliminar imagen en Cloudinary:", e)
