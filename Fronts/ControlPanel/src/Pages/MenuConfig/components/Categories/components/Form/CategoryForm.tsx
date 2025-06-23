@@ -4,7 +4,7 @@ import FormFields from './components/FormFields';
 import ImageSection from './components/ImageSection';
 import PexelsGallery from './components/PexelsGallery';
 import useCategoryForm from './Hooks/useCategoryForm';
-import { useAppContext } from '../../../../Context/AppContext';
+import { useAppContext } from '@/Context/AppContext';
 
 function CategoryForm() {
   const {
