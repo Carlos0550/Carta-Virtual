@@ -44,8 +44,8 @@ class Business(db.Model):
 
 class Categories(db.Model):
     __tablename__ = "categories"
-
-    category_name = Column(BIGINT, primary_key=True)
+    category_id = Column(BIGINT, primary_key=True)
+    category_name = Column(TEXT, nullable=False)
     category_description = Column(TEXT, nullable=True)
     category_image = Column(TEXT, nullable=False)
     category_products_count = Column(NUMERIC, nullable=False)
@@ -53,6 +53,7 @@ class Categories(db.Model):
 
     def to_dict(self):
         return {
+            "category_id": self.category_id,
             "category_name": self.category_name,
             "category_description": self.category_description,
             "category_image": self.category_image,
