@@ -70,6 +70,7 @@ def save_category(data: CategoryPayload, business_id: str) -> Union[Dict[str, st
         return jsonify({
             "msg": "Categoría creada exitosamente",
             "category": {
+                "category_id": new_category.category_id,
                 "category_name": new_category.category_name,
                 "category_description": new_category.category_description,
                 "category_image": new_category.category_image,
@@ -164,7 +165,7 @@ def get_categories(business_id:str):
 def update_category(data: CategoryPayload, category_id: str, business_id: str):
     """Actualiza una categoría existente"""
     try:
-        category = Categories.query.filter_by(category_name=category_id, business_category_id=business_id).first()
+        category = Categories.query.filter_by(category_id=category_id, business_category_id=business_id).first()
         if not category:
             return jsonify({
                 "msg": "Categoría no encontrada",
@@ -180,6 +181,7 @@ def update_category(data: CategoryPayload, category_id: str, business_id: str):
                 }), 409
 
         image_url = category.category_image
+        print(image_url)
         if data.get("category_image"):
             new_url = UploadImageToCloudinary(data["category_image"], folder="categories")
             if not new_url:
@@ -188,7 +190,8 @@ def update_category(data: CategoryPayload, category_id: str, business_id: str):
                     "error": "IMAGE_UPLOAD_ERROR"
                 }), 500
             delete_result = DeleteFromCloudinary(image_url)
-            if delete_result != "ok":
+            print(delete_result)
+            if delete_result != "ok" and delete_result != "not found":
                 DeleteFromCloudinary(new_url)
                 return jsonify({
                     "msg": "No se pudo eliminar la imagen anterior",
@@ -226,7 +229,7 @@ def update_category(data: CategoryPayload, category_id: str, business_id: str):
 def delete_category(category_id: str, business_id: str):
     """Elimina una categoría"""
     try:
-        category = Categories.query.filter_by(category_name=category_id, business_category_id=business_id).first()
+        category = Categories.query.filter_by(category_id=category_id, business_category_id=business_id).first()
         if not category:
             return jsonify({
                 "msg": "Categoría no encontrada",
