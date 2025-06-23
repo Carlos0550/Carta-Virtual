@@ -3,6 +3,7 @@ import { FaEdit, FaTrash } from 'react-icons/fa';
 import { useAppContext } from '../../../../../../Context/AppContext';
 import { useQuery } from '@tanstack/react-query';
 import BallsLoader from "@/components/Icons/BallsLoader.svg"
+import { useState } from 'react';
 function CategoriesCardList() {
 
   const {
@@ -18,17 +19,21 @@ function CategoriesCardList() {
       setCategoriesModal
     }
   } = useAppContext()
-  
 
+  const [deleting, setDeleting] = useState<boolean>(false)
+  const handleDeleteCategory = async(cat_id: string) => {
+    setDeleting(true)
+    await deleteCategory(cat_id)
+    setDeleting(false)
+  }
   const {isLoading} = useQuery({
     queryKey:["retrieveIfEnough"],
     queryFn: async () => {
-      await new Promise(resolve => setTimeout(resolve, 2000));
       await retrieveCategories(businessData?.business_id!)
     },
-    enabled: !categories || categories.length === 0 ,
-    retry: true,
-    retryDelay: 5000
+    enabled: !!(businessData?.business_id) && (!categories || categories.length === 0),
+    retry: 2,
+    retryDelay: 1000
   })
 
   if(isLoading){
@@ -94,8 +99,10 @@ function CategoriesCardList() {
             <Button
               variant="light"
               color="red"
+              loading={deleting}
+              disabled={deleting}
               leftSection={<FaTrash size={16} />}
-              onClick={() => deleteCategory(cat.category_id || cat.category_name)}
+              onClick={() => handleDeleteCategory(cat.category_id)}
             >
               Eliminar
             </Button>
