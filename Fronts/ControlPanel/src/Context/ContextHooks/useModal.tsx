@@ -1,6 +1,7 @@
 import { useMemo, useState } from 'react'
 import type { BusinessModal } from '../HookTypes/ModalTypes'
 import { type CategoriesModal } from '../HookTypes/Categories'
+import type { FoodModal } from '../HookTypes/FoodTypes'
 
 function useModal() {
   const [businessModal, setBusinessModal] = useState<BusinessModal>({
@@ -35,6 +36,12 @@ function useModal() {
     opened: false,
     editCategoryData: null
   })
+
+  const [foodModal, setFoodModal] = useState<FoodModal>({
+    formType: "create",
+    opened: false,
+  })
+
 
   const closeBusinessModal = () => {
     setBusinessModal({
@@ -73,12 +80,21 @@ function useModal() {
       editCategoryData: null
     })
   }
+
+  const closeFoodModal = () => {
+    setFoodModal({
+      opened: false,
+      formType: "create"
+    })
+  }
   return useMemo(() => ({
     businessModal, setBusinessModal, closeBusinessModal,
-    closeCategoriesModal, categoriesModal, setCategoriesModal
-  }), [
+    closeCategoriesModal, categoriesModal, setCategoriesModal,
+    closeFoodModal, foodModal, setFoodModal
+  }),[
     businessModal, setBusinessModal, closeBusinessModal,
-    closeCategoriesModal, categoriesModal, setCategoriesModal
+    closeCategoriesModal, categoriesModal, setCategoriesModal,
+    closeFoodModal, foodModal, setFoodModal
   ])
 }
 

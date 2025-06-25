@@ -1,3 +1,4 @@
+from sqlalchemy import INTEGER
 from .connections.pg_database import db
 from sqlalchemy.dialects.postgresql import UUID, JSONB, BIGINT, TEXT, NUMERIC
 from sqlalchemy.schema import Column, ForeignKey
@@ -61,3 +62,15 @@ class Categories(db.Model):
             "business_category_id": self.business_category_id
         }
     
+class Products(db.Model):
+    __tablename__ = "products"
+
+    product_id = Column(BIGINT, primary_key=True)
+    product_name = Column(TEXT, nullable=False)
+    product_price = Column(NUMERIC, nullable=False)
+    product_category = Column(BIGINT, ForeignKey(Categories.category_id), nullable=False)
+    product_tags = Column(JSONB, nullable=True)
+    product_ingredients = Column(JSONB, nullable=False)
+    product_image = Column(TEXT, nullable=False)
+    product_description = Column(TEXT, nullable=False)
+    product_cautions = Column(TEXT, nullable=True)

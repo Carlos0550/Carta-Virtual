@@ -6,6 +6,7 @@ import { IoFastFood } from 'react-icons/io5';
 
 import { TbCategoryFilled } from "react-icons/tb";
 import Categories from './components/Categories/Categories';
+import Foods from './components/Foods/Foods';
 
 function MenuConfig() {
     const [activeTab, setActiveTab] = useState<string | null>('categorias');
@@ -28,6 +29,10 @@ function MenuConfig() {
             </Tabs.List>
             <Tabs.Panel value='categorias'>
                 <Categories/>
+            </Tabs.Panel>
+
+            <Tabs.Panel value='comidas'>
+                <Foods/>
             </Tabs.Panel>
         </Tabs>
     </Flex>
