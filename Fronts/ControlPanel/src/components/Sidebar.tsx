@@ -75,15 +75,15 @@ function Sidebar({ mobileExtended, setMobileExtended }: Props) {
                         </Box>
 
                         <Box
-                            className={`sidebar-list disabled ${location.pathname === "/expirations" ? "active" : ""}`}
-                            // onClick={() => navigate("/expirations")}
+                            className={`sidebar-list ${location.pathname === "/design" ? "active" : ""}`}
+                            onClick={() => navigate("/design")}
                         >
                             <BiFoodMenu size={20} /> Personalización de carta
                         </Box>
 
                         <Box
-                            className={`sidebar-list disabled ${location.pathname === "/monthly-resume" ? "active" : ""}`}
-                            // onClick={() => navigate("/monthly-resume")}
+                            className={`sidebar-list ${location.pathname === "/my-qr" ? "active" : ""}`}
+                            onClick={() => navigate("/my-qr")}
                         >
                             <BiQr size={20} /> Mi QR
                         </Box>
@@ -207,18 +207,19 @@ function Sidebar({ mobileExtended, setMobileExtended }: Props) {
                                 </Box>
 
                                 <Box
-                                    className={`sidebar-list ${location.pathname === "/expirations" ? "active" : ""}`}
+                                    className={`sidebar-list ${location.pathname === "/menu-configuration" ? "active" : ""}`}
                                     onClick={() => {
                                         navigate("/menu-configuration")
+                                        setMobileExtended(false);
                                     }}
                                 >
                                     <BiDish size={20} /> Mi menú
                                 </Box>
 
                                 <Box
-                                    className={`sidebar-list disabled ${location.pathname === "/expirations" ? "active" : ""}`}
+                                    className={`sidebar-list ${location.pathname === "/design" ? "active" : ""}`}
                                     onClick={() => {
-                                        // navigate("/expirations")
+                                        navigate("/design")
                                         setMobileExtended(false);
                                     }}
                                 >
@@ -226,8 +227,11 @@ function Sidebar({ mobileExtended, setMobileExtended }: Props) {
                                 </Box>
 
                                 <Box
-                                    className={`sidebar-list disabled ${location.pathname === "/monthly-resume" ? "active" : ""}`}
-                                    // onClick={() => navigate("/monthly-resume")}
+                                    className={`sidebar-list ${location.pathname === "/my-qr" ? "active" : ""}`}
+                                    onClick={() => {
+                                        navigate("/my-qr")
+                                        setMobileExtended(false);
+                                    }}
                                 >
                                     <BiQr size={20} /> Mi QR
                                 </Box>

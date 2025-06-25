@@ -7,8 +7,8 @@ import Step3Fields from './components/Step3Fields';
 import useFoodForm from './Hooks/useFoodForm';
 import { useAppContext } from '@/Context/AppContext';
 import { onTagsChange, onDescriptionChange, onCautionsChange, onClearImage } from './services/fieldHandlers';
-import { uploadFile } from './services/fileUploadService';
-import { selectPexelsImage, handleUsePexelsImage, downloadPexelsImage } from './services/pexelsService';
+import { uploadFile } from '@/services/fileUploadService';
+import { selectPexelsImage, handleUsePexelsImage, downloadPexelsImage } from '@/services/pexelsService';
 import type { FoodForm } from '@/Context/HookTypes/FoodTypes';
 
 const steps = [
