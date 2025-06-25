@@ -5,6 +5,7 @@ import type { CategoriesForm } from "../../../../../../../Context/HookTypes/Cate
 import { useAppContext } from "../../../../../../../Context/AppContext";
 import { showNotification } from "@mantine/notifications";
 import { IoAlertCircleOutline } from "react-icons/io5";
+import { searchPexelsImages, downloadPexelsImage } from '@/services/pexelsService';
 
 type CategoriesErrors = Partial<Record<keyof CategoriesForm, string>>;
 
@@ -13,56 +14,6 @@ const initialFormData: CategoriesForm = {
   category_description: ""
 };
 
-async function translateToEnglish(text: string): Promise<string> {
-  const url = 'https://openl-translate.p.rapidapi.com/translate/bulk';
-  const options = {
-    method: 'POST',
-    headers: {
-      'x-rapidapi-key': import.meta.env.VITE_RAPIDAPI_KEY,
-      'x-rapidapi-host': 'openl-translate.p.rapidapi.com',
-      'Content-Type': 'application/json'
-    },
-    body: JSON.stringify({ target_lang: 'en', text: [text] })
-  };
-  try {
-    const response = await fetch(url, options);
-    const result = await response.json();
-    return result.translatedTexts?.[0] || text;
-  } catch {
-    return text;
-  }
-}
-
-async function downloadPexelsImage(photo: any, searchTerm: string): Promise<File> {
-  const imageUrl = photo.src.large2x || photo.src.original || photo.src.large;
-  const blob = await (await fetch(imageUrl)).blob();
-  const fileName = `${searchTerm.toLowerCase().replace(/\s+/g, '-')}.jpg`;
-  return new File([blob], fileName, { type: 'image/jpeg' });
-}
-
-async function searchPexelsPhotos(searchTerm: string): Promise<any[]> {
-  const translated = await translateToEnglish(searchTerm);
-  // 1) petición ligera para total
-  const head = await fetch(
-    `https://api.pexels.com/v1/search?query=${encodeURIComponent(translated)}&per_page=1`,
-    { headers: { Authorization: import.meta.env.VITE_PEXELS_SECRET } }
-  );
-  const headData = await head.json();
-  const total = headData.total_results || 0;
-  if (!total) return [];
-
-  const perPage = 4;
-  const maxPage = Math.ceil(total / perPage);
-  const page = Math.floor(Math.random() * maxPage) + 1;
-
-  const res = await fetch(
-    `https://api.pexels.com/v1/search?query=${encodeURIComponent(translated)}&per_page=${perPage}&page=${page}`,
-    { headers: { Authorization: import.meta.env.VITE_PEXELS_SECRET } }
-  );
-  if (!res.ok) throw new Error();
-  const data = await res.json();
-  return data.photos || [];
-}
 
 function useCategoryForm() {
   const {
@@ -131,7 +82,10 @@ function useCategoryForm() {
     setPexelsImages([]);
 
     try {
-      const photos = await searchPexelsPhotos(pexelsSearchTerm.trim());
+      const photos = await searchPexelsImages(
+        pexelsSearchTerm.trim(),
+        import.meta.env.VITE_PEXELS_SECRET || ''
+      );
       if (photos.length === 1) {
         const file = await downloadPexelsImage(photos[0], formData.category_name);
         setFileData(file);
